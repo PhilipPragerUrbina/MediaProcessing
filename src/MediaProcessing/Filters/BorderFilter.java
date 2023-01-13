@@ -19,6 +19,6 @@ public class BorderFilter implements Filter<RGBA> {
 
     @Override
     public void apply(Image<RGBA> image) {
-        
+        //todo downscale image
     }
 }
