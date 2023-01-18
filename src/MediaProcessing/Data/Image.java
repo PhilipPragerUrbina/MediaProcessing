@@ -2,7 +2,9 @@ package MediaProcessing.Data;
 
 import MediaProcessing.Utils.Color;
 
+import javax.swing.plaf.synth.ColorType;
 import java.lang.reflect.Array;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -10,6 +12,7 @@ import java.util.stream.Stream;
  * @param <DataType> Data to store for each pixel
  */
 public class  Image<DataType extends Color>  {
+
     private DataType[][] data;
     private int width;
     private int height;
@@ -34,7 +37,7 @@ public class  Image<DataType extends Color>  {
         Image<DataType> copy = new Image<DataType>(width,height); //Create new image
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                copy.data[x][y] = (DataType) data[x][y].clone(); //copy data
+                copy.data[x][y] = data[x][y]; //copy data(immutable so just assign)
             }
         }
         return copy;
@@ -77,8 +80,8 @@ public class  Image<DataType extends Color>  {
      */
     public void setData(Image<DataType> other){
         this.data = other.data;
-        this.width = data.length;
-        this.height = data[0].length;
+        this.width = other.getWidth();
+        this.height =other.getHeight();
     }
 
 
@@ -128,19 +131,76 @@ public class  Image<DataType extends Color>  {
     }
 
     /**
+     * Mutable Pixel data for processing with streams
+     * Since color is immutable, this mutable wrapper allows modification of image in stream
+     */
+    public class Pixel<DataType>{
+        private int x,y; //Read only coordinates
+
+        Pixel(int x, int y, DataType color){
+            this.x = x;
+            this.y = y;
+            this.color = color;
+        }
+
+        public int getX(){
+            return x;
+        }
+        public int getY(){
+            return y;
+        }
+        public DataType color; //Color of pixel.
+    }
+
+    /**
      * Build a stream from the image
      * Useful for parallel operations using parallel().forEach or other built in stream shenanigans
-     * @warning Make sure to set values, not create new object if you want to modify the source image
-     * @return A stream of colors
+     * @warning Modifications to pixel color does not edit source image, make sure to use applyStream() or setPixel() to apply the changes
+     * @return A stream of pixels that contain colors
      */
-    public Stream<DataType> getStream(){
-        Stream.Builder<DataType> builder = Stream.builder(); //get builder
+    public Stream<Pixel<DataType>> getStream(){
+        Stream.Builder<Pixel<DataType>> builder = Stream.builder(); //get builder
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                builder.accept(data[x][y]);
+                builder.accept(new Pixel(x,y,data[x][y])); //add pixels
             }
         }
         return builder.build();
+    }
+
+    /**
+     * Apply pixel data to an image
+     * @param pixel Coordinates and color to change in image
+     *  Does not reference pixel in any way
+     *   Make sure in bounds
+     */
+    public void setPixel(Pixel<DataType> pixel){
+        setPixel(pixel.getX(),pixel.getY(), pixel.color);
+    }
+
+    /**
+     * Apply color changes from stream pixels to source image
+     * Simply calls setPixel on the color value of each pixel. Can also be done manually.
+     * @param stream Stream from getStream()
+     */
+    public void applyStream(Stream<Pixel<DataType>> stream){
+        stream.forEach(this::setPixel);
+    }
+
+
+    /**
+     * Apply a simple operation on each pixel
+     * Loops through all coordinates and gives pixel data
+     * Similar to getStream but simpler
+     * Make sure to apply changes
+     * @param consumer Operation
+     */
+    public void forEach(Consumer<Pixel<DataType>> consumer){
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                consumer.accept(new Pixel<>(x,y, data[x][y]));
+            }
+        }
     }
 
 

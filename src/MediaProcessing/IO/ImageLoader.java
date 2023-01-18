@@ -36,12 +36,11 @@ public class ImageLoader <ColorType extends Color> {
             for (int y = 0; y < raw_image.getHeight(); y++) {
                 ColorType color = null;
                 try {
-                    color = type.getDeclaredConstructor().newInstance(); //Create color
                     java.awt.Color read_color = new  java.awt.Color(raw_image.getRGB(x,y)); //read color
-                    color.setRGBA(new RGBA(read_color.getRed(),read_color.getGreen(),read_color.getBlue(), read_color.getAlpha())); //set color
+                    color = type.getDeclaredConstructor(java.awt.Color.class).newInstance(read_color); //Create color using reflection(requires constructor with java color parameter)
                     image.setPixel(x,y, color);//copy over
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    e.printStackTrace();
+                    e.printStackTrace(); //Template Color is invalid
                 }
             }
         }

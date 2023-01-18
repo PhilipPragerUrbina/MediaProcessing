@@ -21,10 +21,11 @@ public class GreyscalePolyFilter implements Filter<G> {
     @Override
     public void apply(Image<G> image) {
         int w = 256/n; //get number of buckets(256 to avoid problems with 255 values going over)
-        image.getStream().forEach(color -> {
-                    int bucket =color.getValue() / w; //Get bucket number
-                    color.setValue((short) ((bucket * w) + (w / 2))); //Get color in center of bucket
-                }
-        );
+        image.forEach(pixel -> {
+            int bucket =pixel.color.getValue() / w; //Get bucket number
+            pixel.color = new G((short) ((bucket * w) + (w / 2))); //Get color in center of bucket
+            image.setPixel(pixel);
+        });
+
     }
 }

@@ -1,26 +1,20 @@
 package MediaProcessing.Utils;
 
-import MediaProcessing.Utils.Colors.RGBA;
 
 /**
  * Color interface for loading colors
- * All colors are converted to RGBA before reading and writing
+ * Immutable
+ * Must have constructor that accepts java color
  */
 public interface Color {
-    /**
-     * Create copy of color
-     */
-    Color clone();
 
     /**
-     * Set all possible values from RGBA
+     * Create color from java color representation
      */
-    void setRGBA(RGBA values);
+    //Create constructor in implementation that takes java color as argument
 
     /**
-     * Get an RGBA representation of the color
+     * Get java color representation of this color
      */
-    RGBA getRGBA();
-
-
+    java.awt.Color getJavaColor();
 }

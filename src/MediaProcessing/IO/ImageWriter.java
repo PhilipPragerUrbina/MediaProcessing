@@ -37,8 +37,7 @@ public class ImageWriter {
         BufferedImage out = new BufferedImage(image.getWidth(),image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < out.getWidth(); x++) {
             for (int y = 0; y < out.getHeight(); y++) {
-                RGBA color = image.getPixel(x,y).getRGBA();
-                out.setRGB(x,y, new java.awt.Color(color.getR(), color.getG(), color.getB(), color.getA()).getRGB());
+                out.setRGB(x,y,image.getPixel(x,y).getJavaColor().getRGB());
             }
         }
         try {
@@ -54,10 +53,9 @@ public class ImageWriter {
      */
     public void writeJPG(Image image){
         BufferedImage out = new BufferedImage(image.getWidth(),image.getHeight(), BufferedImage.TYPE_INT_RGB);
-        for (int x = 0; x < out.getWidth(); x++) {
+        for (int x = 0; x < out.getWidth(); x++) { //todo not repeat for different formats
             for (int y = 0; y < out.getHeight(); y++) {
-                RGBA color = image.getPixel(x,y).getRGBA();
-                out.setRGB(x,y, new java.awt.Color(color.getR(), color.getG(), color.getB(), color.getA()).getRGB());
+                out.setRGB(x,y,image.getPixel(x,y).getJavaColor().getRGB());
             }
         }
         try {

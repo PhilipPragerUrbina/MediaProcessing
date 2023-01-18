@@ -3,6 +3,8 @@ package MediaProcessing.Filters;
 import MediaProcessing.Data.Image;
 import MediaProcessing.Utils.Colors.RGBA;
 
+import java.util.stream.Stream;
+
 /**
  * Get the negative of an image
  * Ignores alpha
@@ -11,8 +13,10 @@ public class InvertFilter implements Filter<RGBA>{
 
     @Override
     public void apply(Image<RGBA> image) {
-        image.getStream().forEach(color ->//for each pixel
-                color.setValues((255-color.getR()),(255-color.getG()),(255-color.getB()),255) //invert(not A)
-        );
+                image.forEach(pixel -> {
+                    pixel.color = new RGBA ((255-pixel.color.getR()),(255-pixel.color.getG()),(255-pixel.color.getB())); //invert channels except alpha
+                    image.setPixel(pixel);
+                });
+
     }
 }
