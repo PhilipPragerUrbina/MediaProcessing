@@ -10,8 +10,9 @@ import java.util.stream.Stream;
  * @param <DataType> Data to store for each pixel
  */
 public class  Image<DataType extends Color>  {
-    private final DataType[][] data;
-    private final int width, height;
+    private DataType[][] data;
+    private int width;
+    private int height;
 
     /**
      * Create empty image with dimensions
@@ -67,6 +68,21 @@ public class  Image<DataType extends Color>  {
         this.width = data.length;
         this.height = data[0].length;
     }
+
+    /**
+     * Set the image data array to the one of the other image
+     * @param other Other image
+     *  Data will be modified if other image is modified
+     *  Changes the width and height(can be used to resize image)
+     */
+    public void setData(Image<DataType> other){
+        this.data = other.data;
+        this.width = data.length;
+        this.height = data[0].length;
+    }
+
+
+
 
     /**
      * Set a pixel value

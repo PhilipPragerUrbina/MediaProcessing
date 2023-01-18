@@ -1,6 +1,7 @@
 package MediaProcessing;
 
 import MediaProcessing.Data.Image;
+import MediaProcessing.Filters.BorderFilter;
 import MediaProcessing.Filters.Filter;
 import MediaProcessing.Filters.GrayScale.GrayscaleThresholdFilter;
 import MediaProcessing.Filters.GrayScale.GreyscalePolyFilter;
@@ -17,11 +18,12 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        ImageLoader<G> reader = new ImageLoader<>("in.jpeg"); //load image
-        Image<G> image = reader.getImage(G.class);
+        ImageLoader<RGBA> reader = new ImageLoader<>("in.jpeg"); //load image
+        Image<RGBA> image = reader.getImage(RGBA.class);
 
-        Filter<G> filter = new GreyscalePolyFilter(5);
+        Filter<RGBA> filter = new BorderFilter(new RGBA(255,0,20,255), 10);
         filter.apply(image); //Apply filter
+
 
         ImageWriter writer = new ImageWriter("out.jpg"); //save image
         writer.writeJPG(image);
