@@ -19,7 +19,7 @@ public class MotionBlur implements Filter<RGBA> {
 
     @Override
     public void apply(Image<RGBA> image) {
-        Image<RGBA> new_image = image.makeCopy();
+        Image<RGBA> new_image = new Image<>(image.getWidth(),image.getHeight());
         for (int x = 0; x < image.getWidth(); x++) { //Iterate over image
             for (int y = 0; y < image.getHeight(); y++) {
                 new_image.setPixel( x,y,blurPixel(image, x , y ));
