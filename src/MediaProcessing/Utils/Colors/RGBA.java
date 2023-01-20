@@ -2,6 +2,8 @@ package MediaProcessing.Utils.Colors;
 
 import MediaProcessing.Utils.Color;
 
+import java.util.Arrays;
+
 /**
  * Full color data
  */
@@ -78,5 +80,12 @@ public class RGBA implements Color {
      */
    public short getA(){
         return data[3];
+    }
+
+    @Override
+    public String toString() {
+        return "RGBA{" +
+                 Arrays.toString(data) +
+                '}';
     }
 }

@@ -15,15 +15,7 @@ public class Main {
         ImageLoader<RGBA> reader = new ImageLoader<>("in.jpg"); //load image
         Image<RGBA> image = reader.getImage(RGBA.class);
 
-        Filter<RGBA> filter = new BorderFilter(new RGBA(255,0,0,255),25);
-        filter.apply(image); //Apply filter
-        filter = new Rotate(45, image.getWidth()/2, image.getHeight()/2);
-        filter.apply(image); //Apply filter
-        filter = new MotionBlur(30);
-        filter.apply(image); //Apply filter
-        filter = new BetterDownsampling(3);
-        filter.apply(image); //Apply filter
-        filter = new Rotate(-30, image.getWidth()/2, image.getHeight()/2);
+        Filter<RGBA> filter = new DistanceMask(new RGBA(255,0,0),150);
         filter.apply(image); //Apply filter
 
 
