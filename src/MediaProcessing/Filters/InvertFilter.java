@@ -3,8 +3,6 @@ package MediaProcessing.Filters;
 import MediaProcessing.Data.Image;
 import MediaProcessing.Utils.Colors.RGBA;
 
-import java.util.stream.Stream;
-
 /**
  * Get the negative of an image
  * Ignores alpha

@@ -1,7 +1,6 @@
 package MediaProcessing.IO;
 
 import MediaProcessing.Data.Image;
-import MediaProcessing.Utils.Colors.RGBA;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -12,7 +11,7 @@ import java.io.IOException;
  * Write an image
  */
 public class ImageWriter {
-    private File file;
+    private final File file;
 
     /**
      * Create an image writer

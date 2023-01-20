@@ -2,8 +2,6 @@ package MediaProcessing.Data;
 
 import MediaProcessing.Utils.Color;
 
-import javax.swing.plaf.synth.ColorType;
-import java.lang.reflect.Array;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -134,8 +132,9 @@ public class  Image<DataType extends Color>  {
      * Mutable Pixel data for processing with streams
      * Since color is immutable, this mutable wrapper allows modification of image in stream
      */
-    public class Pixel<DataType>{
-        private int x,y; //Read only coordinates
+    public static class Pixel<DataType>{
+        private final int x;
+        private final int y; //Read only coordinates
 
         Pixel(int x, int y, DataType color){
             this.x = x;
@@ -162,7 +161,7 @@ public class  Image<DataType extends Color>  {
         Stream.Builder<Pixel<DataType>> builder = Stream.builder(); //get builder
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                builder.accept(new Pixel(x,y,data[x][y])); //add pixels
+                builder.accept(new Pixel(x, y, data[x][y])); //add pixels
             }
         }
         return builder.build();
@@ -198,7 +197,7 @@ public class  Image<DataType extends Color>  {
     public void forEach(Consumer<Pixel<DataType>> consumer){
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                consumer.accept(new Pixel<>(x,y, data[x][y]));
+                consumer.accept(new Pixel<>(x, y, data[x][y]));
             }
         }
     }

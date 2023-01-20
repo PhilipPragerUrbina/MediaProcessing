@@ -8,7 +8,7 @@ import MediaProcessing.Utils.Colors.G;
  * Apply polychrome filter to quantize grayscale
  */
 public class GreyscalePolyFilter implements Filter<G> {
-    private int n;
+    private final int n;
 
     /**
      * Create a polychrome filter

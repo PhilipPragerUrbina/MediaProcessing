@@ -8,7 +8,7 @@ import MediaProcessing.Utils.Colors.G;
  * Quantize greyscale to black and white based on threshold
  */
 public class GrayscaleThresholdFilter implements Filter<G> {
-private short threshold;
+private final short threshold;
 
     /**
      * Create greyscale filter

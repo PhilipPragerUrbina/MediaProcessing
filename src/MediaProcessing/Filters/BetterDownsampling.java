@@ -7,7 +7,7 @@ import MediaProcessing.Utils.Colors.RGBA;
  * Average down sample image to resize it
  */
 public class BetterDownsampling implements Filter<RGBA> {
-    private int factor;
+    private final int factor;
 
     /**
      * Down sample an image

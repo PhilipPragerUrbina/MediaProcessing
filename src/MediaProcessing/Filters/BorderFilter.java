@@ -7,8 +7,8 @@ import MediaProcessing.Utils.Colors.RGBA;
  * Add a border to image
  */
 public class BorderFilter implements Filter<RGBA> {
-    private RGBA border_color;
-    private int border_width;
+    private final RGBA border_color;
+    private final int border_width;
 
     /**
      * Add a "picture frame" like border

@@ -7,8 +7,9 @@ import MediaProcessing.Utils.Colors.RGBA;
  * Rotate image by angle
  */
 public class Rotate implements Filter<RGBA> {
-    private double angle; //angle radians
-    private double center_x, center_y;
+    private final double angle; //angle radians
+    private final double center_x;
+    private final double center_y;
 
     /**
      * Rotate image over origin

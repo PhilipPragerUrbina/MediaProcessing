@@ -6,7 +6,7 @@ import MediaProcessing.Utils.Color;
  * Full color data
  */
 public class RGBA implements Color {
-    private short[] data; //r g b a
+    private final short[] data; //r g b a
 
     /**
      * Create from java color for java reflection

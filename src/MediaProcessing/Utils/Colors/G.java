@@ -6,7 +6,7 @@ import MediaProcessing.Utils.Color;
  * Greyscale color. Single channel.
  */
 public class G implements Color {
-    private short value;
+    private final short value;
 
     /**
      * Create from java color for java reflection using just red channel

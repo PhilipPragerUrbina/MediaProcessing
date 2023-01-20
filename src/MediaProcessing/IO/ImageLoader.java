@@ -2,7 +2,6 @@ package MediaProcessing.IO;
 
 import MediaProcessing.Data.Image;
 import MediaProcessing.Utils.Color;
-import MediaProcessing.Utils.Colors.RGBA;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -15,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
  * @param <ColorType> Color to use
  */
 public class ImageLoader <ColorType extends Color> {
-    private BufferedImage raw_image; //java image
+    private final BufferedImage raw_image; //java image
 
     /**
      * Read an image

@@ -7,7 +7,7 @@ import MediaProcessing.Utils.Colors.RGBA;
  * Add motion blur to image
  */
 public class MotionBlur implements Filter<RGBA> {
-    private int blur_size;
+    private final int blur_size;
 
     /**
      * Add blur to image in X direction

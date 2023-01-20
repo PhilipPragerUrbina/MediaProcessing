@@ -2,10 +2,7 @@ package MediaProcessing;
 
 import MediaProcessing.Data.Image;
 import MediaProcessing.Filters.*;
-import MediaProcessing.Filters.GrayScale.GrayscaleThresholdFilter;
-import MediaProcessing.Filters.GrayScale.GreyscalePolyFilter;
 import MediaProcessing.IO.ImageWriter;
-import MediaProcessing.Utils.Colors.G;
 import MediaProcessing.Utils.Colors.RGBA;
 
 import MediaProcessing.IO.ImageLoader;
