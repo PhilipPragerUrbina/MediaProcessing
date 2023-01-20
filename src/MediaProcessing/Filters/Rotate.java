@@ -7,36 +7,51 @@ import MediaProcessing.Utils.Colors.RGBA;
  * Rotate image by angle
  */
 public class Rotate implements Filter<RGBA> {
-    private double angle;
+    private double angle; //angle radians
+    private double center_x, center_y;
 
     /**
      * Rotate image over origin
      *
-     * @param angle Angle to rotate(radians)
+     * @param angle Angle to rotate(degrees)
+     * @param center_x,center_Y The point to rotate around
      */
-    public Rotate(double angle) {
-        this.angle = angle;
+    public Rotate(double angle, double center_x, double center_y) {
+        this.angle = Math.toRadians(angle);
+        this.center_x = center_x;
+        this.center_y = center_y;
     }
     //todo change center of rotation
 
     @Override
     public void apply(Image<RGBA> image) {
         Image<RGBA> new_image =new Image<>(image.getWidth(), image.getHeight());
-
-
-        for (int x = 0; x < image.getWidth(); x++) { //Iterate over original image
-            for (int y = 0; y < image.getHeight(); y++) {
+        for (int x = 0; x < new_image.getWidth(); x++) { //Iterate over new image
+            for (int y = 0; y < new_image.getHeight(); y++) {
                 new_image.setPixel(x,y, new RGBA()); //Set background color
-                RGBA color = image.getPixel(x, y); //original image color
-                //rotate coordinates
-                int new_x =(int)Math.round(Math.cos(angle) * x - Math.sin(angle) * y);
-                int new_y =(int)Math.round(Math.cos(angle)*y + Math.sin(angle) * x);
-                //apply to new image if in bounds
-                if(new_image.inBounds(new_x,new_y)){
-                    new_image.setPixel(new_x, new_y, color); //todo round coordinates rather than cast
+
+                //Global coordinates to object(original image) coordinates
+
+                //Subtract center to make relative to origin
+                double o_x = x - center_x;
+                double o_y = y - center_y;
+                //rotate point
+                double new_x =(Math.cos(angle) * o_x - Math.sin(angle) * o_y);
+                double new_y =(Math.sin(angle)  * o_x + Math.cos(angle) * o_y);
+
+                //add center again
+                 new_x +=center_x;
+                 new_y += center_y;
+
+                if(image.inBounds((int)new_x,(int)new_y)){ //If in bounds of original
+                    RGBA color = image.getPixel((int)new_x, (int)new_y); //original image color
+                    new_image.setPixel(x, y, color);
                 }
+
+
             }
         }
+
         image.setData(new_image);
     }
 
