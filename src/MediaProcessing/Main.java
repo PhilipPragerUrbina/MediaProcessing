@@ -15,7 +15,7 @@ public class Main {
         ImageLoader<RGBA> reader = new ImageLoader<>("in.jpg"); //load image
         Image<RGBA> image = reader.getImage(RGBA.class);
 
-        Filter<RGBA> filter = new DistanceMask(new RGBA(255,0,0),150);
+        Filter<RGBA> filter = new MedianFilter(2);
         filter.apply(image); //Apply filter
 
 
