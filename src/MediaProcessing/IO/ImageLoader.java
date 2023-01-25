@@ -1,7 +1,7 @@
 package MediaProcessing.IO;
 
 import MediaProcessing.Data.Image;
-import MediaProcessing.Utils.Color;
+import MediaProcessing.Utils.Colors.Color;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

@@ -1,12 +1,14 @@
-package MediaProcessing.Utils;
+package MediaProcessing.Utils.Vectors;
 
 import MediaProcessing.Utils.Colors.RGBA;
 
+import java.util.Random;
+
 /**
- * Three component double vector, useful for color calculations that are not possible with shorts
+ * Three component double vector, useful for color calculations that are not possible with shorts or representing positions
  *  Immutable
  */
-public class Vector3 {
+public class Vector3 implements Vector<Vector3>{
     final private double x,y,z; //Components
 
     /**
@@ -53,6 +55,7 @@ public class Vector3 {
      * Add corresponding components
      * @return this + b
      */
+    @Override
     public Vector3 add(Vector3 b){
         return new Vector3(x + b.x, y + b.y, z + b.z);
     }
@@ -61,6 +64,7 @@ public class Vector3 {
      * Subtract corresponding components
      * @return this - b
      */
+    @Override
     public Vector3 subtract(Vector3 b){
         return new Vector3(x - b.x, y - b.y, z - b.z);
     }
@@ -69,6 +73,7 @@ public class Vector3 {
      * Multiply corresponding components
      * @return this * b
      */
+    @Override
     public Vector3 multiply(Vector3 b){
         return new Vector3(x * b.x, y * b.y, z * b.z);
     }
@@ -77,13 +82,52 @@ public class Vector3 {
      * Divide corresponding components
      * @return this / b
      */
+    @Override
     public Vector3 divide(Vector3 b){
         return new Vector3(x / b.x, y / b.y, z / b.z);
     }
 
     /**
+     * Get the dot or scalar product
+     */
+    @Override
+    public double dot(Vector3 other) {
+        return x * other.x + y * other.y + z*other.z;
+    }
+
+    /**
+     * Get random vector whose components are in the range of (0)-(Corresponding component in this vector exclusive)
+     * @return new vec3(rand*x, rand*y, rand*z)
+     */
+    @Override
+    public Vector3 randomRange(Random random) {
+        return new Vector3(random.nextDouble() * x, random.nextDouble() * y, random.nextDouble() * z);
+    }
+
+    @Override
+    public Vector3 multiply(double scalar) {
+        return new Vector3(x * scalar,y*scalar,z*scalar);
+    }
+
+    @Override
+    public Vector3 add(double scalar) {
+        return new Vector3(x + scalar,y+scalar,z+scalar);
+    }
+
+    @Override
+    public Vector3 divide(double scalar) {
+        return new Vector3(x / scalar,y/scalar,z/scalar);
+    }
+
+    @Override
+    public Vector3 subtract(double scalar) {
+        return new Vector3(x - scalar,y-scalar,z-scalar);
+    }
+
+    /**
      * Get magnitude of vector
      */
+    @Override
     public double length(){
         return Math.sqrt(x*x + y*y + z*z);
     }
@@ -91,6 +135,7 @@ public class Vector3 {
     /**
      * Get distance between this vector and other vector
      */
+    @Override
     public double distance(Vector3 other){
         return (this.subtract(other)).length();
     }
@@ -99,6 +144,7 @@ public class Vector3 {
      * Get normalized vector
      * @return Unit vector
      */
+    @Override
     public Vector3 normalized(){
         return this.divide(new Vector3(length()));
     }

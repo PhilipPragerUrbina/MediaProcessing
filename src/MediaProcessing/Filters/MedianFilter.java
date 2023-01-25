@@ -2,11 +2,8 @@ package MediaProcessing.Filters;
 
 import MediaProcessing.Data.Image;
 import MediaProcessing.Utils.Colors.RGBA;
-import MediaProcessing.Utils.Vector3;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 
 /**

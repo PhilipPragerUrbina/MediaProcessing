@@ -2,7 +2,7 @@ package MediaProcessing.Filters;
 
 import MediaProcessing.Data.Image;
 import MediaProcessing.Utils.Colors.RGBA;
-import MediaProcessing.Utils.Vector3;
+import MediaProcessing.Utils.Vectors.Vector3;
 
 /**
  * Simple color "green" screen key

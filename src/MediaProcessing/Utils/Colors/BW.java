@@ -1,6 +1,6 @@
 //package MediaProcessing.Utils.Colors;
 //
-//import MediaProcessing.Utils.Color;
+//import MediaProcessing.Utils.Colors.Color;
 //
 ///**
 // * Binary black and white color

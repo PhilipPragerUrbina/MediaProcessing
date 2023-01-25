@@ -1,4 +1,4 @@
-package MediaProcessing.Utils;
+package MediaProcessing.Utils.Colors;
 
 
 /**

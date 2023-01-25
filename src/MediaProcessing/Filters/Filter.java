@@ -1,7 +1,7 @@
 package MediaProcessing.Filters;
 
 import MediaProcessing.Data.Image;
-import MediaProcessing.Utils.Color;
+import MediaProcessing.Utils.Colors.Color;
 
 /**
  * Filter to apply to images

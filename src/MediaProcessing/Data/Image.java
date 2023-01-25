@@ -1,6 +1,6 @@
 package MediaProcessing.Data;
 
-import MediaProcessing.Utils.Color;
+import MediaProcessing.Utils.Colors.Color;
 
 import java.util.function.Consumer;
 import java.util.stream.Stream;

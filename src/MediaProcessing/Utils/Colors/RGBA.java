@@ -1,7 +1,5 @@
 package MediaProcessing.Utils.Colors;
 
-import MediaProcessing.Utils.Color;
-
 import java.util.Arrays;
 
 /**

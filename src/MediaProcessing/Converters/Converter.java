@@ -1,7 +1,7 @@
 package MediaProcessing.Converters;
 
 import MediaProcessing.Data.Image;
-import MediaProcessing.Utils.Color;
+import MediaProcessing.Utils.Colors.Color;
 
 /**
  * Convert between image types
