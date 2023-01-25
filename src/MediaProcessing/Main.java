@@ -15,7 +15,11 @@ public class Main {
         ImageLoader<RGBA> reader = new ImageLoader<>("in.jpg"); //load image
         Image<RGBA> image = reader.getImage(RGBA.class);
 
-        Filter<RGBA> filter = new MedianFilter(2);
+        Filter<RGBA> filter = new ColorNoise(0.2);
+        filter.apply(image); //Apply filter
+        filter = new BetterDownsampling(6);
+        filter.apply(image); //Apply filter
+        filter= new MedianFilter(5);
         filter.apply(image); //Apply filter
 
 
