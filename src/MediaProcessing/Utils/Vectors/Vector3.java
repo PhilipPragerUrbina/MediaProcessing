@@ -2,6 +2,7 @@ package MediaProcessing.Utils.Vectors;
 
 import MediaProcessing.Utils.Colors.RGBA;
 
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -40,6 +41,26 @@ public class Vector3 implements Vector<Vector3>{
      */
     public Vector3(RGBA color){
         this(color.getR(), color.getG(), color.getB());
+    }
+
+    /**
+     * Important. Make sure vector can be properly compared
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true; //Check for reference equality
+        if (o == null || getClass() != o.getClass()) return false; //Make sure they are the same class
+        Vector3 vector3 = (Vector3) o;
+        return Double.compare(vector3.x, x) == 0 && Double.compare(vector3.y, y) == 0 && Double.compare(vector3.z, z) == 0; //Compare each component
+        //Uses proper Double.compare which is better than == since it takes into account some floating point specific things
+    }
+
+    /**
+     * Auto generated hash code(why not)
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y, z);
     }
 
     /**

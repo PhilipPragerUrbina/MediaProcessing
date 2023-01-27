@@ -11,7 +11,9 @@ import java.util.Random;
 public class Cluster <PositionType extends Vector<PositionType>>{
     private PositionType center; //Center of cluster
     private PositionType average_center; //Center for calculations
-    private int num_points = 0;
+    private int num_points = 0; //Points currently assinged to cluster
+    private boolean stable = false; //If it has stopped changing
+
     /**
      * Create a cluster at a center
      */
@@ -50,8 +52,18 @@ public class Cluster <PositionType extends Vector<PositionType>>{
      *  Set the center to the average of the registered points
      */
     public void update(){
+        stable = center.equals(average_center);  //Is stable if the center has not changed
         center = average_center;
     }
+
+    /**
+     * True if center has not changed in last update.
+     */
+    public boolean isStable(){
+        return stable;
+    }
+
+
 
     /**
      * Register a new point

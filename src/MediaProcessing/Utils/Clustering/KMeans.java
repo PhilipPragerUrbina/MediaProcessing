@@ -13,6 +13,7 @@ import java.util.Random;
 public class KMeans <PositionType extends Vector<PositionType>, ValueType > {
     private ArrayList<Point<PositionType,ValueType>> points;
     private ArrayList<Cluster<PositionType>> clusters;
+    boolean has_run = false;
 
     /**
      *  Init k means clustering algorithm
@@ -42,21 +43,32 @@ public class KMeans <PositionType extends Vector<PositionType>, ValueType > {
 
     /**
      * Run the algorithm
-     * todo clear or check that it only runs once
+     * Can only be run once
      */
     public void run(){
-        for (int i = 0; i < 10; i++) { //todo switch to detecting no movemnt
+        if(has_run){ //Check to make sure everything has been cleared
+            throw new UnsupportedOperationException("Each K-Means instance only run once.");
+        }
+        has_run = true;
+
+        //todo multithreading or other optimization
+        while (true) { //While the clusters are still moving
             for (Cluster<PositionType> cluster: clusters) { //For each cluster
-                cluster.clear();;
+                cluster.clear(); //Clear clusters
             }
             for (Point<PositionType,ValueType> point: points) { //For each point
-                point.setCluster(getClosestCluster(point));
+                point.setCluster(getClosestCluster(point)); //Assign to cluster
             }
-            for (Cluster<PositionType> cluster: clusters) { //For each cluster
-                cluster.update();;
+            int stable_count = 0; //Number of stable clusters
+            for (Cluster<PositionType> cluster: clusters) { //For each cluster.
+                //todo see if this can be combined with first loop to make code cleaner
+                cluster.update(); //Update clusters
+                stable_count += cluster.isStable() ? 1 : 0; //Add to stable count if stable
+            }
+            if(stable_count == clusters.size()){ //All clusters are stable
+                break; //Stop algorithm
             }
         }
-
     }
 
     /**
@@ -79,9 +91,9 @@ public class KMeans <PositionType extends Vector<PositionType>, ValueType > {
     }
 
     /**
-     * Get the clustered position of a point
+     * Get the clustered(cluster center) position of a point
      * @param i index
-     *          Will be error if algorithm not run yet
+     *   Only call after run or explode
      */
     public PositionType getClusteredPosition(int i){
         return points.get(i).getCluster().getCenter();
@@ -95,6 +107,12 @@ public class KMeans <PositionType extends Vector<PositionType>, ValueType > {
         return points.get(i).getPosition();
     }
 
+    /**
+     * Get the number of points or the maximum index for accessing point data
+     */
+    public int getNumPoints(){
+        return points.size();
+    }
 
 
     /**
