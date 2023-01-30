@@ -4,6 +4,7 @@ import MediaProcessing.Data.Image;
 import MediaProcessing.Filters.*;
 import MediaProcessing.Filters.Clustering.ColorReduction;
 import MediaProcessing.IO.ImageWriter;
+import MediaProcessing.Utils.ColorPallet;
 import MediaProcessing.Utils.Colors.RGBA;
 
 import MediaProcessing.IO.ImageLoader;
@@ -16,7 +17,11 @@ public class Main {
         ImageLoader<RGBA> reader = new ImageLoader<>("in.jpg"); //load image
         Image<RGBA> image = reader.getImage(RGBA.class);
 
-        Filter<RGBA> filter = new ColorReduction(2);
+        //todo list filter
+        //todo apply filter to folder of images
+
+        Filter<RGBA> filter = new PalletFilter(new ColorPallet<>(new RGBA(0,0,0), new RGBA(255,255,255), new RGBA(255,0,0),
+                new RGBA(0,255,0), new RGBA(0,0,255)));
         filter.apply(image); //Apply filter
 
         /*

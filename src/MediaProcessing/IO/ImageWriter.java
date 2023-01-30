@@ -29,16 +29,25 @@ public class ImageWriter {
     }
 
     /**
+     * Set a bufferimage's pixels to the pixels from an image
+     * @param out_image Set pixel values of this image
+     * @param in_image The input pixel values
+     */
+    private static void setBufferedImage(BufferedImage out_image, Image in_image){
+        for (int x = 0; x < out_image.getWidth(); x++) {
+            for (int y = 0; y < out_image.getHeight(); y++) {
+                out_image.setRGB(x,y,in_image.getPixel(x,y).getJavaColor().getRGB());
+            }
+        }
+    }
+
+    /**
      * Write the image to the location as png
      * @param image Image data to write
      */
     public void writePNG(Image image){
         BufferedImage out = new BufferedImage(image.getWidth(),image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for (int x = 0; x < out.getWidth(); x++) {
-            for (int y = 0; y < out.getHeight(); y++) {
-                out.setRGB(x,y,image.getPixel(x,y).getJavaColor().getRGB());
-            }
-        }
+       setBufferedImage(out,image);
         try {
             ImageIO.write(out,"png", file);
         } catch (IOException e) {
@@ -52,11 +61,7 @@ public class ImageWriter {
      */
     public void writeJPG(Image image){
         BufferedImage out = new BufferedImage(image.getWidth(),image.getHeight(), BufferedImage.TYPE_INT_RGB);
-        for (int x = 0; x < out.getWidth(); x++) { //todo not repeat for different formats
-            for (int y = 0; y < out.getHeight(); y++) {
-                out.setRGB(x,y,image.getPixel(x,y).getJavaColor().getRGB());
-            }
-        }
+        setBufferedImage(out,image);
         try {
             ImageIO.write(out,"jpg", file);
         } catch (IOException e) {

@@ -16,12 +16,34 @@ public class KMeans <PositionType extends Vector<PositionType>, ValueType > {
     boolean has_run = false;
 
     /**
+     *  Init k means clustering algorithm with your own cluster positions
+     * @param cluster_centers The starting center of the clusters(length is k)
+     *  For example, you can initialize clusters with random colors from your image if you are using colors as positions
+     */
+    public KMeans(PositionType[] cluster_centers){
+        if(cluster_centers.length < 1){ //Check that K is valid
+            throw new IllegalArgumentException("K can not be negative or 0");
+        }
+        //init arrays
+        points = new ArrayList<>();
+        clusters = new ArrayList<>(cluster_centers.length);
+        //Init clusters
+        for (PositionType cluster_center : cluster_centers) {
+            clusters.add(new Cluster<>(cluster_center));
+        }
+    }
+
+    /**
      *  Init k means clustering algorithm
      * @param k How many clusters
      * @param min minimum position value(Inclusive)
      * @param max maximum position value(Exclusive)
      */
     public KMeans(int k, PositionType min, PositionType max){
+        if(k < 1){ //Check that K is valid
+            throw new IllegalArgumentException("K can not be negative or 0");
+        }
+
         //init arrays
         points = new ArrayList<>();
         clusters = new ArrayList<>(k);
@@ -46,6 +68,10 @@ public class KMeans <PositionType extends Vector<PositionType>, ValueType > {
      * Can only be run once
      */
     public void run(){
+        if(points.isEmpty()){
+            return; //No points
+        }
+
         if(has_run){ //Check to make sure everything has been cleared
             throw new UnsupportedOperationException("Each K-Means instance only run once.");
         }
@@ -61,7 +87,6 @@ public class KMeans <PositionType extends Vector<PositionType>, ValueType > {
             }
             int stable_count = 0; //Number of stable clusters
             for (Cluster<PositionType> cluster: clusters) { //For each cluster.
-                //todo see if this can be combined with first loop to make code cleaner
                 cluster.update(); //Update clusters
                 stable_count += cluster.isStable() ? 1 : 0; //Add to stable count if stable
             }
@@ -77,7 +102,7 @@ public class KMeans <PositionType extends Vector<PositionType>, ValueType > {
      * @return Closest cluster
      */
     private Cluster<PositionType> getClosestCluster(Point<PositionType,ValueType> point) {
-        double closest_distance = Double.MAX_VALUE; //todo start with first
+        double closest_distance = Double.MAX_VALUE;  //Could start with the first cluster but it's fine
         Cluster<PositionType> closest = null;
 
         for (Cluster<PositionType> cluster: clusters) { //For each cluster
@@ -100,7 +125,7 @@ public class KMeans <PositionType extends Vector<PositionType>, ValueType > {
     }
 
     /**
-     * Get the orginal position of a point
+     * Get the original position of a point
      * @param i index
      */
     public PositionType getOriginalPosition(int i){

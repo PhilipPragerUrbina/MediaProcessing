@@ -1,6 +1,8 @@
 package MediaProcessing.Utils.Colors;
 
 
+import MediaProcessing.Utils.Vectors.Vector;
+
 /**
  * Color interface for loading colors
  * Immutable
@@ -17,4 +19,11 @@ public interface Color {
      * Get java color representation of this color
      */
     java.awt.Color getJavaColor();
+
+    //todo multiple color spaces
+
+    /**
+     * Get a vector representation of the color
+     */
+     Vector getVectorRepresentation();
 }

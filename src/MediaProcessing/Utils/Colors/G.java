@@ -1,5 +1,8 @@
 package MediaProcessing.Utils.Colors;
 
+import MediaProcessing.Utils.Vectors.HighDimVector;
+import MediaProcessing.Utils.Vectors.Vector;
+
 /**
  * Greyscale color. Single channel.
  */
@@ -37,6 +40,11 @@ public class G implements Color {
      */
     public G(int value){
         this.value = (short)value;
+    }
+
+    @Override
+    public Vector getVectorRepresentation() {
+        return new HighDimVector(value);
     }
 
     /**

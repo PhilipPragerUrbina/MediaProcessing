@@ -1,5 +1,8 @@
 package MediaProcessing.Utils.Colors;
 
+import MediaProcessing.Utils.Vectors.HighDimVector;
+import MediaProcessing.Utils.Vectors.Vector;
+
 import java.util.Arrays;
 
 /**
@@ -78,6 +81,14 @@ public class RGBA implements Color {
      */
    public short getA(){
         return data[3];
+    }
+
+    /**
+     * Get RGBA vector
+     */
+    @Override
+    public Vector getVectorRepresentation() {
+        return new HighDimVector(data[0],data[1],data[2],data[3]);
     }
 
     @Override
