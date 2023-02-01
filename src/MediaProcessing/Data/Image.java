@@ -201,8 +201,4 @@ public class  Image<DataType extends Color>  {
             }
         }
     }
-
-
-
-
 }

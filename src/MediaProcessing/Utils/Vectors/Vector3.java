@@ -170,5 +170,13 @@ public class Vector3 implements Vector<Vector3>{
         return this.divide(new Vector3(length()));
     }
 
+    /**
+     * Clamp each component between min and max values both inclusive
+     * @return clamped vector
+     */
+    public Vector3 clamped(double min, double max){
+        return new Vector3(Math.min(Math.max(x,min),max),Math.min(Math.max(y,min),max),Math.min(Math.max(z,min),max));
+    }
+
 
 }
