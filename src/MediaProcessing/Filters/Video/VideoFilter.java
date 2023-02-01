@@ -11,7 +11,7 @@ import MediaProcessing.Utils.Colors.Color;
 public interface VideoFilter <DataType extends Color> {
     /**
      * Apply filter to video
-     * @param image Video to apply to
+     * @param video Video to apply to
      */
-    void apply(Video<DataType> image);
+    void apply(Video<DataType> video);
 }
