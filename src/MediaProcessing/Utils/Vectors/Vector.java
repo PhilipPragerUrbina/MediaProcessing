@@ -1,5 +1,7 @@
 package MediaProcessing.Utils.Vectors;
 
+import MediaProcessing.Utils.Colors.Color;
+
 import java.util.Random;
 
 /**
@@ -76,6 +78,9 @@ public interface Vector<Type> {
      */
     Type subtract(double scalar);
 
-
-
+    /**
+     * Clamp each component between min and max values both inclusive
+     * @return clamped vector
+     */
+    Type clamped(double min, double max);
 }

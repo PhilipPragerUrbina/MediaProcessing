@@ -212,5 +212,17 @@ public class HighDimVector implements Vector<HighDimVector>{
         return this.divide(new HighDimVector(length()));
     }
 
+    /**
+     * Clamp each component between min and max values both inclusive
+     * @return clamped vector
+     */
+    public HighDimVector clamped(double min, double max){
+        double[] out = new double[getDimensions()];
+        for (int i = 0; i < getDimensions(); i++) {
+            out[i] = Math.min(Math.max(components[i],min),max);
+        }
+        return new HighDimVector(out);
+    }
+
 
 }
