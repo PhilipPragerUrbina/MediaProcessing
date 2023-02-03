@@ -1,5 +1,6 @@
 package MediaProcessing.Utils.Convolution;
 
+import MediaProcessing.Utils.Matrix;
 import MediaProcessing.Utils.Vectors.Vector;
 
 /**
@@ -10,6 +11,13 @@ public class Kernel2D {
     private int size;
     final private double[][] array;
     final double total_weight;
+
+    /**
+     * Create kernel from matrix
+     */
+    public Kernel2D(Matrix matrix){
+        this(matrix.getArrayCopy());
+    }
 
     /**
      * Create a kernel
@@ -61,6 +69,17 @@ public class Kernel2D {
     public double getWeight(int x, int y){
         return array[x][y];
     }
+
+    /**
+     * Get matrix representation
+     */
+    public Matrix getMatrix(){
+        return new Matrix(array);
+    }
+
+
+
+    //todo matrix construcotr and getmatrix
 
 
 }

@@ -1,6 +1,7 @@
-package MediaProcessing.Filters;
+package MediaProcessing.Filters.Convolution;
 
 import MediaProcessing.Data.Image;
+import MediaProcessing.Filters.Filter;
 import MediaProcessing.Utils.Colors.Color;
 import MediaProcessing.Utils.Colors.RGBA;
 import MediaProcessing.Utils.Convolution.Kernel2D;
@@ -50,5 +51,12 @@ public class ConvolutionalFilter implements Filter<RGBA> {
             }
         }
         return sum.divide(kernel.getTotalWeight()); //Divide by total weight. Is automatically divided by 1 if total weight is 0.
+    }
+
+    /**
+     * Get the kernel used in this filter
+     */
+    public Kernel2D getKernel(){
+        return kernel;
     }
 }

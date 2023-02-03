@@ -1,19 +1,13 @@
 package MediaProcessing;
 
 import MediaProcessing.Data.Image;
-import MediaProcessing.Data.Video;
 import MediaProcessing.Filters.*;
-import MediaProcessing.Filters.Clustering.ColorReduction;
-import MediaProcessing.Filters.Video.FrameFilter;
-import MediaProcessing.Filters.Video.VideoFilter;
+import MediaProcessing.Filters.Convolution.*;
 import MediaProcessing.IO.ImageWriter;
-import MediaProcessing.IO.VideoLoader;
-import MediaProcessing.IO.VideoWriter;
-import MediaProcessing.Utils.ColorPallet;
 import MediaProcessing.Utils.Colors.RGBA;
 
 import MediaProcessing.IO.ImageLoader;
-import MediaProcessing.Utils.Convolution.Kernel2D;
+import MediaProcessing.Utils.Matrix;
 import org.jcodec.api.JCodecException;
 
 import java.io.IOException;
@@ -38,8 +32,11 @@ public class Main {
         ImageLoader<RGBA> reader = new ImageLoader<>("media/in.jpg"); //Load image
         Image<RGBA> image = reader.getImage(RGBA.class);
 
-        Filter<RGBA> filter = new GaussianBlurFilter(20,10);
+        Filter<RGBA>  filter = new  GaussianBlurFilter(3,10);
         filter.apply(image); //Apply filter
+        filter = new InverseSharpenFilter(new GaussianBlurFilter(3,10).getKernel());
+        filter.apply(image); //Apply filter
+
 
 
         ImageWriter writer = new ImageWriter("out.jpg"); //save image

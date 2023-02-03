@@ -1,10 +1,12 @@
-package MediaProcessing.Filters;
+package MediaProcessing.Filters.Convolution;
 
 import MediaProcessing.Data.Image;
+import MediaProcessing.Filters.Convolution.ConvolutionalFilter;
+import MediaProcessing.Filters.Filter;
 import MediaProcessing.Utils.Colors.RGBA;
 import MediaProcessing.Utils.Convolution.Kernel2D;
 
-//todo put in folder
+
 
 /**
  * Simple blur convolutional filter

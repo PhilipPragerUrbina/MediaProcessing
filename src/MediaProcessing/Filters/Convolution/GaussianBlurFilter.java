@@ -1,17 +1,17 @@
-package MediaProcessing.Filters;
+package MediaProcessing.Filters.Convolution;
 
 import MediaProcessing.Data.Image;
+import MediaProcessing.Filters.Filter;
 import MediaProcessing.Utils.Colors.RGBA;
 import MediaProcessing.Utils.Convolution.Kernel2D;
 
-//todo put in folder
 
 /**
  * Complex blur convolutional filter
  */
 public class GaussianBlurFilter implements Filter<RGBA> {
 
-    final Filter<RGBA> filter; //store convolution filter
+    final ConvolutionalFilter filter; //store convolution filter
 
     /**
      * Generate a gaussian blur convolution kernel
@@ -42,5 +42,12 @@ public class GaussianBlurFilter implements Filter<RGBA> {
     @Override
     public void apply(Image<RGBA> image) {
         filter.apply(image); //apply convolution
+    }
+
+    /**
+     * Get the kernel used in this filter
+     */
+    public Kernel2D getKernel(){
+        return filter.getKernel();
     }
 }
