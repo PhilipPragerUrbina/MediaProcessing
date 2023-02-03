@@ -23,14 +23,14 @@ public class Main {
     public static void main(String[] args) throws IOException, JCodecException {
 
         //Video demo
-        VideoLoader<RGBA> loader = new VideoLoader<>("media/video_input.mp4");
-        Video<RGBA> video = loader.getVideo(RGBA.class);
+        //VideoLoader<RGBA> loader = new VideoLoader<>("media/video_input.mp4");
+      //  Video<RGBA> video = loader.getVideo(RGBA.class);
 
-        VideoFilter<RGBA> video_filter = new FrameFilter<>( new CompoundFilter<>(new ColorReduction(2),new BetterDownsampling(2)));
-        video_filter.apply(video);
+      //  VideoFilter<RGBA> video_filter = new FrameFilter<>( new CompoundFilter<>(new ColorReduction(2),new BetterDownsampling(2)));
+       // video_filter.apply(video);
 
-        VideoWriter video_writer = new VideoWriter("out.mp4");
-        video_writer.writeVideo(video);
+       // VideoWriter video_writer = new VideoWriter("out.mp4");
+      //  video_writer.writeVideo(video);
 
 
         //Image demo
@@ -38,13 +38,9 @@ public class Main {
         ImageLoader<RGBA> reader = new ImageLoader<>("media/in.jpg"); //Load image
         Image<RGBA> image = reader.getImage(RGBA.class);
 
-        Filter<RGBA> filter = new ConvolutionalFilter(new Kernel2D(new double[][]{ //todo have wrapper filters that store or generate the kernel. Such as embossFilter
-                {-4,0,0},
-                {0,0,0},
-                {0,0,4}
-        }));
+        Filter<RGBA> filter = new GaussianBlurFilter(20,10);
         filter.apply(image); //Apply filter
-        //you can apply as many filters as you want
+
 
         ImageWriter writer = new ImageWriter("out.jpg"); //save image
         writer.writeJPG(image);
