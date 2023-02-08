@@ -2,15 +2,13 @@ package MediaProcessing;
 
 import MediaProcessing.Data.Image;
 import MediaProcessing.Filters.*;
-import MediaProcessing.Filters.Convolution.*;
 import MediaProcessing.Filters.Tracking.DrawBounding;
 import MediaProcessing.Filters.Tracking.DrawMarker;
 import MediaProcessing.IO.ImageWriter;
-import MediaProcessing.Utils.BoundingPolygon;
+import MediaProcessing.Tracking.BoundingPolygon;
 import MediaProcessing.Utils.Colors.RGBA;
 
 import MediaProcessing.IO.ImageLoader;
-import MediaProcessing.Utils.Matrix;
 import MediaProcessing.Utils.Vectors.Point;
 import org.jcodec.api.JCodecException;
 
@@ -44,22 +42,6 @@ public class Main {
         //Perspective correct
         ImageLoader<RGBA> reader = new ImageLoader<>("media/cards2.jpg"); //Load image
         Image<RGBA> image = reader.getImage(RGBA.class);
-
-        //Baseline algorithm. todo put in class or interface
-        Filter<RGBA> mask = new DistanceMask(new RGBA(255,0,0),40);//Apply color mask
-        mask.apply(image);
-
-        Point average = new Point(0,0);
-        int count = 0;
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                if(image.getPixel(x,y).getR() > 100){ //Is white
-                    average = average.add(new Point(x,y));
-                    count++;
-                }
-            }
-        }
-        new DrawMarker<>(new Point(average.getX()/count,average.getY()/count),new RGBA(0,0,255),7,2).apply(image); //Draw average point
 
 
         //Pick points with this cool tool I found: https://yangcha.github.io/iview/iview.html

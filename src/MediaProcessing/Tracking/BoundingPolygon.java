@@ -1,4 +1,4 @@
-package MediaProcessing.Utils;
+package MediaProcessing.Tracking;
 
 import MediaProcessing.Data.Image;
 import MediaProcessing.Utils.Colors.Color;

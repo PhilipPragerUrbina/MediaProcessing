@@ -2,7 +2,7 @@ package MediaProcessing.Filters.Tracking;
 
 import MediaProcessing.Data.Image;
 import MediaProcessing.Filters.Filter;
-import MediaProcessing.Utils.BoundingPolygon;
+import MediaProcessing.Tracking.BoundingPolygon;
 import MediaProcessing.Utils.Colors.Color;
 import MediaProcessing.Utils.Vectors.Point;
 

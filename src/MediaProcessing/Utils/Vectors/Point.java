@@ -115,11 +115,12 @@ public class Point implements Vector<Point>{
     }
 
     /**
-     * Not practical for integer coordinates
+     * Useful for average
+     * Components cast to int at end
      */
     @Override
     public Point divide(double scalar) {
-        return null;
+        return new Point((int)(x / scalar), (int)(y / scalar));
     }
 
     /**
