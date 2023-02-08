@@ -5,7 +5,7 @@ import MediaProcessing.Filters.Filter;
 import MediaProcessing.Utils.Colors.RGBA;
 import MediaProcessing.Utils.Convolution.Kernel2D;
 
-
+//todo Is not working correctly yet
 /**
  * Take inverse of other filter
  */

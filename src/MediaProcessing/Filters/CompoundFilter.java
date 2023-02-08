@@ -4,7 +4,7 @@ import MediaProcessing.Data.Image;
 import MediaProcessing.Utils.Colors.Color;
 
 /**
- * Run multiple image filters in sequence as a single filter
+ * Run multiple image filters in sequence as a single filter. AKA a pipeline filter.
  */
 public class CompoundFilter<ColorType extends Color> implements Filter<ColorType>{
     private final Filter<ColorType>[] filters;
