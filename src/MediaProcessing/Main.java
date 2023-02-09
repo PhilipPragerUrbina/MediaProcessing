@@ -1,18 +1,28 @@
 package MediaProcessing;
 
+import MediaProcessing.Converters.Converter;
+import MediaProcessing.Converters.DistanceMask;
 import MediaProcessing.Data.Image;
 import MediaProcessing.Filters.*;
 import MediaProcessing.Filters.Tracking.DrawBounding;
 import MediaProcessing.Filters.Tracking.DrawMarker;
+import MediaProcessing.Filters.Tracking.DrawShape;
 import MediaProcessing.IO.ImageWriter;
 import MediaProcessing.Tracking.BoundingPolygon;
+import MediaProcessing.Tracking.Shape;
+import MediaProcessing.Tracking.ShapeDetector;
+import MediaProcessing.Utils.Colors.HSV;
+import MediaProcessing.Utils.Colors.MaskValue;
 import MediaProcessing.Utils.Colors.RGBA;
 
 import MediaProcessing.IO.ImageLoader;
 import MediaProcessing.Utils.Vectors.Point;
+import MediaProcessing.Utils.Vectors.Vector3;
 import org.jcodec.api.JCodecException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Main {
 
@@ -40,8 +50,8 @@ public class Main {
         //Image demo
 
         //Perspective correct
-        ImageLoader<RGBA> reader = new ImageLoader<>("media/cards2.jpg"); //Load image
-        Image<RGBA> image = reader.getImage(RGBA.class);
+        ImageLoader<HSV> reader = new ImageLoader<>("media/cards2.jpg"); //Load image
+        Image<HSV> image = reader.getImage(HSV.class);
 
 
         //Pick points with this cool tool I found: https://yangcha.github.io/iview/iview.html
@@ -54,13 +64,33 @@ public class Main {
         BoundingPolygon poly = new BoundingPolygon(a,b,c,d); //Create bounding
 
         //Preview bounding
-        DrawBounding<RGBA>  filter = new DrawBounding<>(poly, null, new DrawMarker<>(null,new RGBA(0,0,255),7,2),0);
-        filter.apply(image); //Apply filter
+      //  DrawBounding<RGBA>  filter = new DrawBounding<>(poly, null, new DrawMarker<>(null,new RGBA(0,0,255),7,2),0);
+      //  filter.apply(image); //Apply filter
 
 
         image = poly.skewCorrectedImage(image,300,200); //transform
 
-        ImageWriter writer = new ImageWriter("out.jpg"); //save image
-        writer.writeJPG(image);
+        //mask test
+        Converter<HSV, MaskValue> mask_filter = new DistanceMask<>(new HSV(new RGBA(255,0,0)), 0.3);
+        Image<MaskValue> mask =mask_filter.convert(image);
+
+        ArrayList<Shape> shapes = ShapeDetector.detectShapes(mask);
+
+        Image<HSV> new_image = new Image<>(image.getWidth(), image.getHeight());
+        new_image.forEach(hsvPixel -> {
+            hsvPixel.color = new HSV();
+            new_image.setPixel(hsvPixel);
+        });
+
+        for (Shape shape: shapes) {
+            DrawShape<HSV> shape_draw = new DrawShape<>(null,new HSV(new Vector3(255,255,255).randomRange(new Random()).getColor((short)255)));
+            System.out.println(shape);
+            shape_draw.setShape(shape);
+            shape_draw.apply(new_image);
+        }
+
+
+        ImageWriter writer = new ImageWriter("out.png"); //save image
+        writer.writePNG(new_image);
     }
 }

@@ -13,7 +13,7 @@ import MediaProcessing.Utils.Convolution.Kernel2D;
  */
 public class BoxBlurFilter implements Filter<RGBA> {
 
-    final Filter<RGBA> filter; //store convolution filter
+    final ConvolutionalFilter filter; //store convolution filter
 
     /**
      * Generate a simple box blur convolution kernel
@@ -31,6 +31,13 @@ public class BoxBlurFilter implements Filter<RGBA> {
         }
 
         filter = new ConvolutionalFilter(new Kernel2D(weights)); //create kernel
+    }
+
+    /**
+     * Get the kernel used in this filter
+     */
+    public Kernel2D getKernel(){
+        return filter.getKernel();
     }
 
     @Override

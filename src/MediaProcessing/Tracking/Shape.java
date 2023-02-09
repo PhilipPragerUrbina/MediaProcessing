@@ -1,9 +1,11 @@
 package MediaProcessing.Tracking;
 
+import MediaProcessing.Data.Image;
 import MediaProcessing.Utils.Vectors.Point;
 import MediaProcessing.Utils.Vectors.Vector2;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
  * Represents an outline of a shape
@@ -55,5 +57,15 @@ public class Shape {
         return corners;
     }
 
+
+    /**
+     * Do something for each data point
+     * @param consumer Operation
+     */
+    public void forEach(Consumer<Point> consumer){
+        for (Point point: outline) {
+            consumer.accept(point);
+        }
+    }
 
 }
