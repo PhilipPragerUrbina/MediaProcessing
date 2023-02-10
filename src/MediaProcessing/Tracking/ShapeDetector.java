@@ -64,7 +64,7 @@ public class ShapeDetector {
             for (int x = current.getX()-1; x < current.getX()+2; x++) {
                 for (int y = current.getY()-1; y < current.getY()+2; y++) {
 
-                    if((have_visited.getPixel(x,y) == null || !have_visited.getPixel(x,y).getValue()) && isEdgePixel(mask,x,y)){ //if is not visited edge
+                    if(have_visited.inBounds(x,y) && (have_visited.getPixel(x,y) == null || !have_visited.getPixel(x,y).getValue()) && isEdgePixel(mask,x,y)){ //if is not visited edge
                         //Visit
                         current = new Point(x,y);
                         found = true;//todo simplify into other method with return

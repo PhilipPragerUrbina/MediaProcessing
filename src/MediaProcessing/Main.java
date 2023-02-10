@@ -51,9 +51,8 @@ public class Main {
         //Image demo
 
         //Perspective correct
-        ImageLoader<HSV> reader = new ImageLoader<>("media/cards2.jpg"); //Load image
+        ImageLoader<HSV> reader = new ImageLoader<>("media/cards3.jpg"); //Load image
         Image<HSV> image = reader.getImage(HSV.class);
-
 
         //Pick points with this cool tool I found: https://yangcha.github.io/iview/iview.html
         Point a = new Point(257,364); //Bottom left
@@ -69,16 +68,18 @@ public class Main {
       //  filter.apply(image); //Apply filter
 
 
-        image = poly.skewCorrectedImage(image,300,200); //transform
+      //  image = poly.skewCorrectedImage(image,300,200); //transform
 
-        new GaussianBlurFilter<HSV>(3,4).apply(image);
+
 
         //mask test
-        Converter<HSV, MaskValue> mask_filter = new DistanceMask<>(new HSV(new RGBA(255,0,0)), 0.3);
+        Converter<HSV, MaskValue> mask_filter = new DistanceMask<>(new HSV(new RGBA(255,255,255)), 0.4);
         Image<MaskValue> mask =mask_filter.convert(image);
 
         Filter<MaskValue> erode = new ErodeFilter(0);
         erode.apply(mask);
+
+       // new GaussianBlurFilter<MaskValue>(3,3).apply(mask);
 
         ArrayList<Shape> shapes = ShapeDetector.detectShapes(mask);
 
@@ -93,10 +94,14 @@ public class Main {
             System.out.println(shape);
             shape_draw.setShape(shape);
             shape_draw.apply(new_image);
+            Point[] points = shape.detectCorners(1,4);
+            for (Point p: points) {
+                //new DrawMarker<HSV>(p, new HSV(new RGBA(255,0,0)),10,5).apply(new_image);
+            }
         }
 
 
         ImageWriter writer = new ImageWriter("out.png"); //save image
-        writer.writePNG(new_image);
+        writer.writePNG(mask);
     }
 }
