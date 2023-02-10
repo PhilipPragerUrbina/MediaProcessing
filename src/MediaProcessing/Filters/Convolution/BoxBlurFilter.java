@@ -3,6 +3,7 @@ package MediaProcessing.Filters.Convolution;
 import MediaProcessing.Data.Image;
 import MediaProcessing.Filters.Convolution.ConvolutionalFilter;
 import MediaProcessing.Filters.Filter;
+import MediaProcessing.Utils.Colors.Color;
 import MediaProcessing.Utils.Colors.RGBA;
 import MediaProcessing.Utils.Convolution.Kernel2D;
 
@@ -11,9 +12,9 @@ import MediaProcessing.Utils.Convolution.Kernel2D;
 /**
  * Simple blur convolutional filter
  */
-public class BoxBlurFilter implements Filter<RGBA> {
+public class BoxBlurFilter<ColorType extends Color> implements Filter<ColorType> {
 
-    final ConvolutionalFilter filter; //store convolution filter
+    final ConvolutionalFilter<ColorType> filter; //store convolution filter
 
     /**
      * Generate a simple box blur convolution kernel
@@ -30,7 +31,7 @@ public class BoxBlurFilter implements Filter<RGBA> {
             }
         }
 
-        filter = new ConvolutionalFilter(new Kernel2D(weights)); //create kernel
+        filter = new ConvolutionalFilter<>(new Kernel2D(weights)); //create kernel
     }
 
     /**
@@ -41,7 +42,7 @@ public class BoxBlurFilter implements Filter<RGBA> {
     }
 
     @Override
-    public void apply(Image<RGBA> image) {
+    public void apply(Image<ColorType> image) {
         filter.apply(image); //apply convolution
     }
 }

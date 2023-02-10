@@ -68,4 +68,7 @@ public class Shape {
         }
     }
 
+    public int size() {
+        return outline.size();
+    }
 }

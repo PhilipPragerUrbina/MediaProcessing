@@ -4,6 +4,7 @@ import MediaProcessing.Converters.Converter;
 import MediaProcessing.Converters.DistanceMask;
 import MediaProcessing.Data.Image;
 import MediaProcessing.Filters.*;
+import MediaProcessing.Filters.Convolution.GaussianBlurFilter;
 import MediaProcessing.Filters.Tracking.DrawBounding;
 import MediaProcessing.Filters.Tracking.DrawMarker;
 import MediaProcessing.Filters.Tracking.DrawShape;
@@ -70,9 +71,14 @@ public class Main {
 
         image = poly.skewCorrectedImage(image,300,200); //transform
 
+        new GaussianBlurFilter<HSV>(3,4).apply(image);
+
         //mask test
         Converter<HSV, MaskValue> mask_filter = new DistanceMask<>(new HSV(new RGBA(255,0,0)), 0.3);
         Image<MaskValue> mask =mask_filter.convert(image);
+
+        Filter<MaskValue> erode = new ErodeFilter(0);
+        erode.apply(mask);
 
         ArrayList<Shape> shapes = ShapeDetector.detectShapes(mask);
 

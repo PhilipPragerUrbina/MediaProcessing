@@ -53,4 +53,10 @@ public class G implements Color {
     public short getValue(){
         return value;
     }
+
+    @Override
+    public Color getColorFromVector(Vector vector) {
+        HighDimVector vector_checked = (HighDimVector) vector.clamped(0,255); //Should be one dimensional high dime vector
+        return new G((short)vector_checked.getValue(0));
+    }
 }

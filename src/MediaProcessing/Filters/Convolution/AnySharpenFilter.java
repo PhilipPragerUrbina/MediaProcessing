@@ -2,6 +2,7 @@ package MediaProcessing.Filters.Convolution;
 
 import MediaProcessing.Data.Image;
 import MediaProcessing.Filters.Filter;
+import MediaProcessing.Utils.Colors.Color;
 import MediaProcessing.Utils.Colors.RGBA;
 import MediaProcessing.Utils.Convolution.Kernel2D;
 import MediaProcessing.Utils.Matrix;
@@ -10,9 +11,9 @@ import MediaProcessing.Utils.Matrix;
 /**
  * Sharpen any kind of blur
  */
-public class AnySharpenFilter implements Filter<RGBA> {
+public class AnySharpenFilter<ColorType extends Color> implements Filter<ColorType> {
 
-    final Filter<RGBA> filter; //store convolution filter
+    final Filter<ColorType> filter; //store convolution filter
 
     /**
      * Generate a sharpening filter for any blur
@@ -27,11 +28,11 @@ public class AnySharpenFilter implements Filter<RGBA> {
         //Will have center since kernel must be odd. Truncation will find this center automatically on divide.
         array[(blur_kernel.getMatrix().getWidth()/2)][(blur_kernel.getMatrix().getWidth()/2)] = 2 * brightness; //Set center to 1 * 2
         Matrix identity_kernel = new Matrix(array);
-        filter=new ConvolutionalFilter(new Kernel2D(identity_kernel.subtract(blur_kernel.getMatrix())));//Subtract and create new kernel
+        filter=new ConvolutionalFilter<>(new Kernel2D(identity_kernel.subtract(blur_kernel.getMatrix())));//Subtract and create new kernel
     }
 
     @Override
-    public void apply(Image<RGBA> image) {
+    public void apply(Image<ColorType> image) {
         filter.apply(image); //apply convolution
     }
 }

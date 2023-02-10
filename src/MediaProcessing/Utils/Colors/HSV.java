@@ -1,5 +1,6 @@
 package MediaProcessing.Utils.Colors;
 
+import MediaProcessing.Utils.Vectors.HighDimVector;
 import MediaProcessing.Utils.Vectors.Vector;
 import MediaProcessing.Utils.Vectors.Vector3;
 
@@ -50,8 +51,14 @@ public class HSV implements Color{
         double c_max  = Math.max(R, Math.max(G,B));
         double c_min  = Math.min(R, Math.min(G,B));
         double delta = c_max - c_min;
+
+
+
         //Double comparison is okay since there are no operations being applied to c_max
-        if(c_max == R){ //Red
+        if(delta == 0){
+            hue = 0;
+        }
+        else if (c_max == R){ //Red
             hue = 60 * (((G-B)/delta)%6.0)/ 360.0; //Divide by 360 to keep the hue in 0-1 range rather than angle
         }else if(c_max == G) { //Green
             hue = 60 * ((B-R)/delta + 2)/ 360.0;
@@ -71,5 +78,11 @@ public class HSV implements Color{
     @Override
     public Vector getVectorRepresentation() {
         return new Vector3(hue,saturation,value);
+    }
+
+    @Override
+    public Color getColorFromVector(Vector vector) {
+        Vector3 vector_checked = (Vector3) vector.clamped(0,1); //Should be 3d vector
+        return new HSV(vector_checked.getX(), vector_checked.getY(), vector_checked.getZ());
     }
 }

@@ -2,6 +2,7 @@ package MediaProcessing.Filters.Convolution;
 
 import MediaProcessing.Data.Image;
 import MediaProcessing.Filters.Filter;
+import MediaProcessing.Utils.Colors.Color;
 import MediaProcessing.Utils.Colors.RGBA;
 import MediaProcessing.Utils.Convolution.Kernel2D;
 
@@ -9,9 +10,9 @@ import MediaProcessing.Utils.Convolution.Kernel2D;
 /**
  * Complex blur convolutional filter
  */
-public class GaussianBlurFilter implements Filter<RGBA> {
+public class GaussianBlurFilter<ColorType extends Color> implements Filter<ColorType> {
 
-    final ConvolutionalFilter filter; //store convolution filter
+    final ConvolutionalFilter<ColorType> filter; //store convolution filter
 
     /**
      * Generate a gaussian blur convolution kernel
@@ -36,11 +37,11 @@ public class GaussianBlurFilter implements Filter<RGBA> {
 
         //Post says to normalize matrix to stop image from getting dark, but it seems to work fine without
 
-        filter = new ConvolutionalFilter(new Kernel2D(weights)); //create kernel
+        filter = new ConvolutionalFilter<>(new Kernel2D(weights)); //create kernel
     }
 
     @Override
-    public void apply(Image<RGBA> image) {
+    public void apply(Image<ColorType> image) {
         filter.apply(image); //apply convolution
     }
 

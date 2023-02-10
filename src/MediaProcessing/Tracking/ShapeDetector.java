@@ -28,7 +28,10 @@ public class ShapeDetector {
 
                 if(isEdgePixel(mask,x,y)){
                     //Find shape
-                    shapes.add(scanShapeEdge(mask,have_visited,x,y));
+                    Shape shape = scanShapeEdge(mask,have_visited,x,y);
+                    if(shape != null){
+                        shapes.add(shape);
+                    }
                 }
 
             }
@@ -76,26 +79,39 @@ public class ShapeDetector {
                 break; //No more adjacent edge pixels
             }
         }
+        if(shape.size() < 4){
+            return null;
+        }
         return shape;
     }
 
     /**
-     * Check if pixel is an edge pixel(lying just inside the object)
-     * Looks to see if it is a white pixel that has any adjacent black pixels
+     * Check if pixel is an edge pixel(lying just outside the object)
+     * Looks to see if it is a black pixel that has any directly adjacent, not diagonal white pixels
      */
     private static boolean isEdgePixel(final Image<MaskValue> mask, final int pixel_x, final int pixel_y){
-        //Check if inside object(must be)
-        if(!mask.getPixel(pixel_x,pixel_y).getValue()){return false;} //Outside of object
 
-        //loop through adjacent pixels
+        //Check if outside object(must be)
+        if(mask.getPixel(pixel_x,pixel_y).getValue()){return false;} //Outside of object
+
+        //loop through adjacent pixels. Two separate loops to avoid checking diagonal pixels
         for (int x = pixel_x-1; x < pixel_x+2; x++) {
-            for (int y = pixel_y-1; y < pixel_y+2; y++) {
-                if(!mask.getPixel(x,y).getValue()){ //Check if black
-                    return true; //Has adjacent black pixel
-                }
+            if(!mask.inBounds(x,pixel_y)){
+                continue;
+            }
+            if(mask.getPixel(x,pixel_y).getValue()){ //Check if white
+                return true; //Has adjacent white pixel
             }
         }
-        return false; //is surrounded by white pixels. Inside of object.
+        for (int y = pixel_y-1; y < pixel_y+2; y++) {
+            if(!mask.inBounds(pixel_x,y)){
+                continue;
+            }
+            if(mask.getPixel(pixel_x,y).getValue()){ //Check if white
+                return true; //Has adjacent white pixel
+            }
+        }
+        return false; //is surrounded by black pixels. Inside of object.
     }
-    //todo use this for erode filter!
+    //todo use this for erode filter! Use white edge pixels for this.
 }

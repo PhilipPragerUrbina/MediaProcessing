@@ -1,7 +1,9 @@
 package MediaProcessing.Utils.Vectors;
 
+import MediaProcessing.Utils.Colors.Color;
 import MediaProcessing.Utils.Colors.RGBA;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.Random;
 

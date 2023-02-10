@@ -1,6 +1,7 @@
 package MediaProcessing.Utils.Vectors;
 
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
@@ -123,6 +124,13 @@ public class HighDimVector implements Vector<HighDimVector>{
     }
 
     /**
+     * Get nth component
+     */
+    public double getValue(int i){
+        return components[i];
+    }
+
+    /**
      * Get random vector whose components are in the range of (0)-(Corresponding component in this vector exclusive)
      * @return new vec3(rand*x, rand*y, rand*z)
      */
@@ -224,5 +232,10 @@ public class HighDimVector implements Vector<HighDimVector>{
         return new HighDimVector(out);
     }
 
-
+    @Override
+    public String toString() {
+        return "HighDimVector{" +
+                "components=" + Arrays.toString(components) +
+                '}';
+    }
 }

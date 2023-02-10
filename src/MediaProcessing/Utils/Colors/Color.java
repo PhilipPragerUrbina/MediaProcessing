@@ -26,4 +26,10 @@ public interface Color {
      * Get a vector representation of the color
      */
      Vector getVectorRepresentation();
+
+    /**
+     * Get a color of same type from a vector
+     * Must be same type of vector as getVectorRepresentation
+     */
+     Color getColorFromVector(Vector vector);
 }

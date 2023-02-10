@@ -179,4 +179,23 @@ public class Vector3 implements Vector<Vector3>{
     public Vector3 clamped(double min, double max){
         return new Vector3(Math.min(Math.max(x,min),max),Math.min(Math.max(y,min),max),Math.min(Math.max(z,min),max));
     }
+
+    public double getX() {
+        return x;
+    }
+    public double getY() {
+        return y;
+    }
+    public double getZ() {
+        return z;
+    }
+
+    @Override
+    public String toString() {
+        return "Vector3{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                '}';
+    }
 }

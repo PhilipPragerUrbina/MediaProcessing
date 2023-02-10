@@ -50,6 +50,15 @@ public class MaskValue implements Color {
         return new HighDimVector(0); //Black
     }
 
+    @Override
+    public Color getColorFromVector(Vector vector) {
+        HighDimVector vector_checked = (HighDimVector) vector.clamped(0,1); //Should be one dimensional high dim vector
+        if(vector_checked.getValue(0) > 0.5){
+            return new MaskValue(true);
+        }
+        return new MaskValue(false);
+    }
+
     /**
      * White is true, black is false.
      */
