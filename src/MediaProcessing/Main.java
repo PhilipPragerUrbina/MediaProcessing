@@ -9,6 +9,7 @@ import MediaProcessing.Filters.Convolution.PrewittEdgeDetection;
 import MediaProcessing.Filters.Tracking.DrawBounding;
 import MediaProcessing.Filters.Tracking.DrawMarker;
 import MediaProcessing.Filters.Tracking.DrawShape;
+import MediaProcessing.IO.ImageDataBase;
 import MediaProcessing.IO.ImageWriter;
 import MediaProcessing.Tracking.BoundingPolygon;
 import MediaProcessing.Tracking.Shape;
@@ -24,6 +25,7 @@ import MediaProcessing.Utils.Vectors.Point;
 import MediaProcessing.Utils.Vectors.Vector3;
 import org.jcodec.api.JCodecException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -110,7 +112,7 @@ public class Main {
         Image<HSV> target = new ImageLoader<HSV>("media/2hearts.png").getImage(HSV.class);
         Similarity<HSV> similarity = new Similarity<>(target);
         double curr_min = 10000;
-
+        ImageDataBase<HSV> folder = new ImageDataBase<>(HSV.class);
         BoundingPolygon polygon_final = null;
         for (Shape shape: shapes) {
             HSV color = new HSV(new Vector3(255,255,255).randomRange(new Random()).getColor((short)255));
@@ -126,6 +128,7 @@ public class Main {
                     BoundingPolygon polygon = new BoundingPolygon(points[0],points[1],points[2],points[3]);
                     Image<HSV> temp = polygon.skewCorrectedImage(image, target.getWidth(),target.getHeight());
                     double sim = similarity.getAverageDifferenceOrientations(temp);
+                    folder.addImage(temp);
                     if(sim < curr_min){
                         polygon_final = polygon;
                         System.out.println(sim);
@@ -136,7 +139,7 @@ public class Main {
         }
         new DrawBounding<HSV>(polygon_final,null, new DrawMarker<HSV>(null,new HSV(new RGBA(0,0,255)),7,2),0).apply(new_image);
 
-
+        folder.writeFolderPng(new File("output"));
         ImageWriter writer = new ImageWriter("out.png"); //save image
         writer.writePNG(out);
     }

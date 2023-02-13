@@ -5,12 +5,16 @@ import MediaProcessing.Utils.Colors.Color;
 import MediaProcessing.Utils.Vectors.Point;
 import MediaProcessing.Utils.Vectors.Vector2;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+
 /**
  * Represent a 4 corner bounding quadrilateral.
  * immutable
  */
 public class BoundingPolygon {
-    private Point[] corners = new Point[4];
+    private Point[] corners ;
 
     /**
      * Create a bounding polygon from 4 corners
@@ -19,17 +23,31 @@ public class BoundingPolygon {
      * b is top left
      */
     public BoundingPolygon(Point a,Point b,Point c,Point d){
+        //Add corners
+       corners = new Point[]{a,b,c,d};
+       Point center = getCenter();
 
-        //todo detect top left
-        corners[0] = a;
-        if(a.distance(b) < a.distance(c)){
-            corners[1] = b;
-            corners[2] = c;
-        }else {
-            corners[1] = c;
-            corners[2] = b;
+       //Get angles from center
+        double[] angles =  new double[4];
+        for (int i = 0; i < 4; i++) {
+            angles[i] = 0; //todo Get angle from center to point here
         }
-        corners[3] = d;
+       //Make sure they are in consistent order
+        Arrays.sort(corners, new Comparator<Point>() {
+            @Override
+            public int compare(Point o1, Point o2) {
+                //Sort by angle to center
+                return 0;
+            }
+        });
+
+    }
+
+    /**
+     * Get average of corners
+     */
+    public Point getCenter(){
+        return corners[0].add(corners[1]).add(corners[2]).add(corners[3]).divide(4);
     }
 
     /**
