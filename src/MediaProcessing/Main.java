@@ -5,6 +5,7 @@ import MediaProcessing.Converters.DistanceMask;
 import MediaProcessing.Data.Image;
 import MediaProcessing.Filters.*;
 import MediaProcessing.Filters.Convolution.GaussianBlurFilter;
+import MediaProcessing.Filters.Convolution.PrewittEdgeDetection;
 import MediaProcessing.Filters.Tracking.DrawBounding;
 import MediaProcessing.Filters.Tracking.DrawMarker;
 import MediaProcessing.Filters.Tracking.DrawShape;
@@ -12,6 +13,8 @@ import MediaProcessing.IO.ImageWriter;
 import MediaProcessing.Tracking.BoundingPolygon;
 import MediaProcessing.Tracking.Shape;
 import MediaProcessing.Tracking.ShapeDetector;
+import MediaProcessing.Tracking.Similarity;
+import MediaProcessing.Utils.Colors.Color;
 import MediaProcessing.Utils.Colors.HSV;
 import MediaProcessing.Utils.Colors.MaskValue;
 import MediaProcessing.Utils.Colors.RGBA;
@@ -39,9 +42,15 @@ public class Main {
        // VideoWriter video_writer = new VideoWriter("out.mp4");
       //  video_writer.writeVideo(video);
 
+
+        //todo better smoothing and edge smoothing
+        //todo hole filling
+        //todo better corner detection
+        //todo better similarity
         //todo image similarity, and image database.
         //todo option to apply to folder of images
         //todo image normalization filter
+        //todo spatial-temporal locality
 
 
 
@@ -53,6 +62,13 @@ public class Main {
         //Perspective correct
         ImageLoader<HSV> reader = new ImageLoader<>("media/cards3.jpg"); //Load image
         Image<HSV> image = reader.getImage(HSV.class);
+
+        //todo subract this from the mask
+        //new PrewittEdgeDetection<HSV>().apply(image);
+
+
+        //todo make similarity better so we dont need this
+        new GaussianBlurFilter<HSV>(3,1).apply(image);
 
         //Pick points with this cool tool I found: https://yangcha.github.io/iview/iview.html
         Point a = new Point(257,364); //Bottom left
@@ -73,13 +89,13 @@ public class Main {
 
 
         //mask test
-        Converter<HSV, MaskValue> mask_filter = new DistanceMask<>(new HSV(new RGBA(255,255,255)), 0.4);
+        Converter<HSV, MaskValue> mask_filter = new DistanceMask<>(new HSV(new RGBA(255,251,252)), 0.8);
         Image<MaskValue> mask =mask_filter.convert(image);
 
-        Filter<MaskValue> erode = new ErodeFilter(0);
-        erode.apply(mask);
+      //  Filter<MaskValue> erode = new ErodeFilter(0);
+        //erode.apply(mask);
 
-       // new GaussianBlurFilter<MaskValue>(3,3).apply(mask);
+        new GaussianBlurFilter<MaskValue>(3,3).apply(mask);
 
         ArrayList<Shape> shapes = ShapeDetector.detectShapes(mask);
 
@@ -89,19 +105,39 @@ public class Main {
             new_image.setPixel(hsvPixel);
         });
 
+        Image<HSV> out = new_image;
+
+        Image<HSV> target = new ImageLoader<HSV>("media/2hearts.png").getImage(HSV.class);
+        Similarity<HSV> similarity = new Similarity<>(target);
+        double curr_min = 10000;
+
+        BoundingPolygon polygon_final = null;
         for (Shape shape: shapes) {
-            DrawShape<HSV> shape_draw = new DrawShape<>(null,new HSV(new Vector3(255,255,255).randomRange(new Random()).getColor((short)255)));
+            HSV color = new HSV(new Vector3(255,255,255).randomRange(new Random()).getColor((short)255));
+            DrawShape<HSV> shape_draw = new DrawShape<>(null,color);
             System.out.println(shape);
             shape_draw.setShape(shape);
             shape_draw.apply(new_image);
             Point[] points = shape.detectCorners(1,4);
             for (Point p: points) {
-                //new DrawMarker<HSV>(p, new HSV(new RGBA(255,0,0)),10,5).apply(new_image);
+                new DrawMarker<HSV>(p, color,3,1).apply(new_image);
+            }
+            if(points.length == 4 ){
+                    BoundingPolygon polygon = new BoundingPolygon(points[0],points[1],points[2],points[3]);
+                    Image<HSV> temp = polygon.skewCorrectedImage(image, target.getWidth(),target.getHeight());
+                    double sim = similarity.getAverageDifferenceOrientations(temp);
+                    if(sim < curr_min){
+                        polygon_final = polygon;
+                        System.out.println(sim);
+                        out = temp;
+                        curr_min = sim;
+                    }
             }
         }
+        new DrawBounding<HSV>(polygon_final,null, new DrawMarker<HSV>(null,new HSV(new RGBA(0,0,255)),7,2),0).apply(new_image);
 
 
         ImageWriter writer = new ImageWriter("out.png"); //save image
-        writer.writePNG(mask);
+        writer.writePNG(out);
     }
 }

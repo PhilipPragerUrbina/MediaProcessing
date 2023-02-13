@@ -77,7 +77,7 @@ public class Shape {
                 start = outline.get(i);
             }
             count++;
-            last_slope =slope;
+            last_slope =slope.add(last_slope).divide(2.0);
         }
         //Get N largest edges
         if(edges.size() < num_corners){

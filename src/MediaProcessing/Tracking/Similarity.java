@@ -20,7 +20,7 @@ public class Similarity<ColorType extends Color> {
      * Use this similarity between images
      * @param reference_image Image to compare other images to
      */
-    public Similarity(boolean test_orientations, Image<ColorType> reference_image) {
+    public Similarity(Image<ColorType> reference_image) {
         this.reference_image_1 = reference_image;
         //precompute rotated reference. todo optimize this(very slow)
         reference_image_2 = getRotated90Degrees(reference_image_1);
@@ -31,7 +31,7 @@ public class Similarity<ColorType extends Color> {
     /**
      * Test average difference for all 4 image orientations and return the best match
      */
-    double getAverageDifferenceOrientations(Image<ColorType> to_compare){
+    public double getAverageDifferenceOrientations(Image<ColorType> to_compare){
         double a = getAverageDifference(reference_image_1,to_compare);
         double b = getAverageDifference(reference_image_2,to_compare);
         double c = getAverageDifference(reference_image_3,to_compare);
@@ -61,8 +61,9 @@ public class Similarity<ColorType extends Color> {
             for (int y = 0; y < to_compare.getHeight(); y++) {
                 Vector expected =reference_image.getPixel(x,y).getVectorRepresentation();
                 Vector value = to_compare.getPixel(x, y).getVectorRepresentation();
-                Vector vector_percent_error =(Vector) ((Vector)value.subtract(expected)).divide(expected); //Does not have absolute value yet
-                double percent_error = Math.abs(vector_percent_error.length()); //Use length to get single percent error for vector
+                Vector vector_percent_error =(Vector) ((Vector)value.subtract(expected)).divide(expected.add(0.0001)); //Does not have absolute value yet
+                double percent_error = expected.distance(value); //Use length to get single percent error for vector
+                //todo fix this
                 average_percent_error += percent_error;
             }
         }
@@ -99,7 +100,7 @@ public class Similarity<ColorType extends Color> {
             double center_x = original.getWidth() / 2.0;
             double center_y = original.getHeight() / 2.0;
             final double angle = Math.PI/2.0; //90 degrees
-                original.forEach(pixel -> {
+                rotated.forEach(pixel -> {
                     //Subtract center
                     double o_x = pixel.getX() - center_x;
                     double o_y = pixel.getY() - center_y;
@@ -110,7 +111,13 @@ public class Similarity<ColorType extends Color> {
                     new_x +=center_x;
                     new_y += center_y;
                     //assign
-                    rotated.setPixel((int)new_x,(int)new_y, pixel.color);
+                    if(original.inBounds((int)new_x,(int)new_y)){
+                        pixel.color = original.getPixel((int)new_x,(int)new_y);
+                    }else {
+                        pixel.color = original.getPixel(0,0);
+                    }
+                    rotated.setPixel(pixel);
+
                 });
                 return rotated;
     }

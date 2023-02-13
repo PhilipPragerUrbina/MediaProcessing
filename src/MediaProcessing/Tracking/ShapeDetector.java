@@ -18,6 +18,7 @@ public class ShapeDetector {
         ArrayList<Shape> shapes = new ArrayList<>();
         Image<MaskValue> have_visited = new Image<>(mask.getWidth(), mask.getHeight()); //Keep track of edge pixels already visited
 
+
         for (int x = 0; x < mask.getWidth(); x++) {
             for (int y = 0; y < mask.getHeight(); y++) {
 

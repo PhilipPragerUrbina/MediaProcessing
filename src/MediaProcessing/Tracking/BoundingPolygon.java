@@ -19,9 +19,16 @@ public class BoundingPolygon {
      * b is top left
      */
     public BoundingPolygon(Point a,Point b,Point c,Point d){
+
+        //todo detect top left
         corners[0] = a;
-        corners[1] = b;
-        corners[2] = c;
+        if(a.distance(b) < a.distance(c)){
+            corners[1] = b;
+            corners[2] = c;
+        }else {
+            corners[1] = c;
+            corners[2] = b;
+        }
         corners[3] = d;
     }
 
