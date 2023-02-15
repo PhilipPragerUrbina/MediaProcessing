@@ -3,9 +3,8 @@ package MediaProcessing;
 import MediaProcessing.Converters.Converter;
 import MediaProcessing.Converters.DistanceMask;
 import MediaProcessing.Data.Image;
-import MediaProcessing.Filters.*;
 import MediaProcessing.Filters.Convolution.GaussianBlurFilter;
-import MediaProcessing.Filters.Convolution.PrewittEdgeDetection;
+import MediaProcessing.Filters.Rotate;
 import MediaProcessing.Filters.Tracking.DrawBounding;
 import MediaProcessing.Filters.Tracking.DrawMarker;
 import MediaProcessing.Filters.Tracking.DrawShape;
@@ -15,7 +14,6 @@ import MediaProcessing.Tracking.BoundingPolygon;
 import MediaProcessing.Tracking.Shape;
 import MediaProcessing.Tracking.ShapeDetector;
 import MediaProcessing.Tracking.Similarity;
-import MediaProcessing.Utils.Colors.Color;
 import MediaProcessing.Utils.Colors.HSV;
 import MediaProcessing.Utils.Colors.MaskValue;
 import MediaProcessing.Utils.Colors.RGBA;
@@ -46,11 +44,9 @@ public class Main {
 
 
         //todo better smoothing and edge smoothing
-        //todo hole filling
-        //todo better corner detection
+        //todo hole filling(ignore small shapes)
+        //todo better corner detection(infer on edge from 4) Figure ut angle. Dynamic step. Make  edges sharper by applying operation on the SHAPE not the mask.
         //todo better similarity
-        //todo image similarity, and image database.
-        //todo option to apply to folder of images
         //todo image normalization filter
         //todo spatial-temporal locality
 
@@ -64,6 +60,7 @@ public class Main {
         //Perspective correct
         ImageLoader<HSV> reader = new ImageLoader<>("media/cards3.jpg"); //Load image
         Image<HSV> image = reader.getImage(HSV.class);
+        new Rotate<HSV>(100,100,100, new HSV()).apply(image);
 
         //todo subract this from the mask
         //new PrewittEdgeDetection<HSV>().apply(image);
@@ -111,23 +108,22 @@ public class Main {
 
         Image<HSV> target = new ImageLoader<HSV>("media/2hearts.png").getImage(HSV.class);
         Similarity<HSV> similarity = new Similarity<>(target);
-        double curr_min = 10000;
+        double curr_min = Double.MAX_VALUE;
         ImageDataBase<HSV> folder = new ImageDataBase<>(HSV.class);
         BoundingPolygon polygon_final = null;
         for (Shape shape: shapes) {
             HSV color = new HSV(new Vector3(255,255,255).randomRange(new Random()).getColor((short)255));
             DrawShape<HSV> shape_draw = new DrawShape<>(null,color);
-            System.out.println(shape);
             shape_draw.setShape(shape);
             shape_draw.apply(new_image);
-            Point[] points = shape.detectCorners(1,4);
+            ArrayList<Point> points = shape.detectCorners(0.2, 4);
             for (Point p: points) {
                 new DrawMarker<HSV>(p, color,3,1).apply(new_image);
             }
-            if(points.length == 4 ){
-                    BoundingPolygon polygon = new BoundingPolygon(points[0],points[1],points[2],points[3]);
+            if(points.size() == 4 ){
+                    BoundingPolygon polygon = new BoundingPolygon(points.get(0), points.get(1), points.get(2), points.get(3));
                     Image<HSV> temp = polygon.skewCorrectedImage(image, target.getWidth(),target.getHeight());
-                    double sim = similarity.getAverageDifferenceOrientations(temp);
+                    double sim = similarity.getCumalativeDifferenceOrientations(temp);
                     folder.addImage(temp);
                     if(sim < curr_min){
                         polygon_final = polygon;
@@ -137,10 +133,10 @@ public class Main {
                     }
             }
         }
-        new DrawBounding<HSV>(polygon_final,null, new DrawMarker<HSV>(null,new HSV(new RGBA(0,0,255)),7,2),0).apply(new_image);
+     //   new DrawBounding<HSV>(polygon_final,null, new DrawMarker<HSV>(null,new HSV(new RGBA(0,0,255)),7,2),0).apply(new_image);
 
         folder.writeFolderPng(new File("output"));
         ImageWriter writer = new ImageWriter("out.png"); //save image
-        writer.writePNG(out);
+        writer.writePNG(new_image);
     }
 }

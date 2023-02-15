@@ -56,57 +56,33 @@ public class Shape {
 
     /**
      * Get estimated corner positions
-     * @param threshold Maximum error for a straight line
+     * @param threshold Maximum error for a straight line in radians
      * @param  num_corners How many corners to detect.
      */
-    public Point[] detectCorners(double threshold, int num_corners){
-        Point[] corners = new Point[num_corners];
-        ArrayList<Edge> edges = new ArrayList<>();
+    public ArrayList<Point> detectCorners(double threshold, int num_corners){
+        ArrayList<Point> corners = new ArrayList<>();
+        int step = 5;
+        if(outline.size() < step+1){
+            return corners;
+        }
         //First we need to detect sides
-        Vector2 last_slope = new Vector2(outline.get(0).subtract(outline.get(1)));
-        Point start = outline.get(0);
+        Vector2 last_slope = new Vector2(outline.get(0).subtract(outline.get(step)));
         int count = 0;
-        for (int i = 1; i < outline.size(); i++) {
-            Vector2 slope = new Vector2(outline.get(i-1).subtract(outline.get(i)));
-            if(slope.distance(last_slope) > threshold){ //Significant difference
+        for (int i = step; i < outline.size(); i+=step) {
+            Vector2 slope = new Vector2(outline.get(i-step).subtract(outline.get(i)));
+            if(Math.abs(Math.atan2(slope.getX(), slope.getY())-Math.atan2(last_slope.getX(), last_slope.getY())) > threshold){ //Significant difference
                 //create edge if big enough
                 if(count > 3){
-                    edges.add(new Edge(start,outline.get(i),count));
+                    corners.add(outline.get(i));
                 }
+                last_slope = slope;
                 count = 0;
-                start = outline.get(i);
             }
             count++;
-            last_slope =slope.add(last_slope).divide(2.0);
+            last_slope =  ( last_slope.multiply((count-1)).add( slope)).divide(count );
         }
-        //Get N largest edges
-        if(edges.size() < num_corners){
-            num_corners = edges.size();
-            corners = new Point[num_corners];
-        }
-        edges.sort(Comparator.comparing(Edge::getLength));//Increasing order
-
-        for (int i = edges.size()-1; i >= edges.size()-num_corners; i--) { //Loop through largest except 1
-            Edge current = edges.get(i);
-            //get the closest connecting points
-            Vector2 closest = new Vector2();
-            double closest_dist = 1000000000;
-            for (int j = edges.size()-1; j >= edges.size()-num_corners; j--) { //Loop through largest
-                if(j == i){
-                    continue;
-                }
-                Edge other = edges.get(j);
-                if(new Vector2(other.a).distance(new Vector2(current.b)) < closest_dist){ //Compare end to start
-                    closest = new Vector2(other.a);
-                    closest_dist = new Vector2(other.a).distance(new Vector2(current.b)) ;
-                }
-            }
-            corners[edges.size() - i -1] = new Point(closest.add(new Vector2(current.b)).divide(2.0));//take average
-        }
-
         return corners;
     }
-
 
     /**
      * Do something for each data point

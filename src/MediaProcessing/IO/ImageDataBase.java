@@ -105,7 +105,7 @@ public class ImageDataBase<ColorType extends Color> {
         double smallest_similarity = threshold;
 
         for (int i = 0; i < images.size(); i++) {
-            double similarity_error  = similarity.getAverageDifferenceOrientations(images.get(i));
+            double similarity_error  = similarity.getCumalativeDifferenceOrientations(images.get(i));
             if(similarity_error < smallest_similarity){
                 smallest_similarity = similarity_error;
                 most_similar_idx = i;

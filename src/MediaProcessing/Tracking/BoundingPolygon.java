@@ -26,19 +26,15 @@ public class BoundingPolygon {
         //Add corners
        corners = new Point[]{a,b,c,d};
        Point center = getCenter();
-
-       //Get angles from center
-        double[] angles =  new double[4];
-        for (int i = 0; i < 4; i++) {
-            angles[i] = 0; //todo Get angle from center to point here
-        }
        //Make sure they are in consistent order
-        Arrays.sort(corners, new Comparator<Point>() {
-            @Override
-            public int compare(Point o1, Point o2) {
-                //Sort by angle to center
-                return 0;
-            }
+        Arrays.sort(corners, (o1, o2) -> {
+            Point local_a = o1.subtract(center);
+            Point local_b = o2.subtract(center);
+
+            double angle_a = Math.atan2(local_a.getX(),local_a.getY());
+            double angle_b = Math.atan2(local_b.getX(),local_b.getY());
+            //Sort by angle to center
+            return Double.compare(angle_a, angle_b);
         });
 
     }
