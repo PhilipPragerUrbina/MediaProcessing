@@ -2,14 +2,13 @@ package MediaProcessing;
 
 
 import MediaProcessing.Data.Image;
+import MediaProcessing.Data.Video;
 import MediaProcessing.Filters.Tracking.DrawBounding;
 import MediaProcessing.Filters.Tracking.DrawMarker;
-import MediaProcessing.IO.ImageDataBase;
-import MediaProcessing.IO.ImageWriter;
+import MediaProcessing.IO.*;
 import MediaProcessing.Tracking.*;
 import MediaProcessing.Utils.Colors.HSV;
 import MediaProcessing.Utils.Colors.RGBA;
-import MediaProcessing.IO.ImageLoader;
 import org.jcodec.api.JCodecException;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +18,15 @@ public class Main {
 
     public static void main(String[] args) throws IOException, JCodecException {
 
+        VideoLoader<HSV> loader = new VideoLoader<>("media/Card.mp4");
+        Video<HSV> video = loader.getVideo(HSV.class);
+        CardTracker tracker = new CardTracker( 10,new CardDetector(0.7, new HSV(new RGBA(253,254,255))),100);
+        video.forEach( frame -> {
+            tracker.trackFrame(frame);
+            tracker.drawCardPositions(frame);
+        });
+        VideoWriter video_writer = new VideoWriter("tracked.mp4");
+        video_writer.writeVideo(video);
 
         ImageLoader<HSV> reader = new ImageLoader<>("media/card6.jpg"); //Load image
         Image<HSV> image = reader.getImage(HSV.class);
