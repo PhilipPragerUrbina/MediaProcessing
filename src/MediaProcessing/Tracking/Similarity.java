@@ -3,7 +3,9 @@ package MediaProcessing.Tracking;
 import MediaProcessing.Data.Image;
 import MediaProcessing.Utils.Colors.Color;
 import MediaProcessing.Utils.Colors.G;
+import MediaProcessing.Utils.Colors.HSV;
 import MediaProcessing.Utils.Vectors.Vector;
+import MediaProcessing.Utils.Vectors.Vector3;
 //todo blur
 
 /**
@@ -42,7 +44,6 @@ public class Similarity<ColorType extends Color> {
     /**
      * Get cumulative difference between images. Lower means more similarity between image and original reference image.
      * @param to_compare Image to compare to
-     *  Different sized images are return double max value
      */
     public double getCumulativeDifference(Image<ColorType> to_compare) {
         return getCumulativeDifference(reference_image_1,to_compare); //Test original image
@@ -50,16 +51,16 @@ public class Similarity<ColorType extends Color> {
 
     /**
      * Get cumulative difference between images. Lower means more similarity between images.
-     *  Different sized images are return double max value
      */
     private double getCumulativeDifference(Image<ColorType> reference_image, Image<ColorType> to_compare){
-        if(!sizeMatch(reference_image, to_compare)){
-            return Double.MAX_VALUE; //Does not match at all
-        }
+        //scale to size
+        double multiplier_x = (double)reference_image.getWidth()/ to_compare.getWidth();
+        double multiplier_y = (double)reference_image.getHeight()/ to_compare.getHeight();
+
         double cumulative_difference = 0;
         for (int x = 0; x < to_compare.getWidth(); x++) {
             for (int y = 0; y < to_compare.getHeight(); y++) {
-                Vector expected =reference_image.getPixel(x,y).getVectorRepresentation();
+                Vector expected =reference_image.getPixel((int)(x*multiplier_x),(int)(y*multiplier_y)).getVectorRepresentation();
                 Vector value = to_compare.getPixel(x, y).getVectorRepresentation();
                 double difference = expected.distance(value);
                 cumulative_difference += difference;

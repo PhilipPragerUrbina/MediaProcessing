@@ -7,11 +7,11 @@ import MediaProcessing.Utils.Vectors.Vector2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
  * Represents an outline of a shape
- * Immutable
  */
 public class Shape {
     private final ArrayList<Point> outline = new ArrayList<>();
@@ -35,53 +35,69 @@ public class Shape {
         return average.divide(outline.size()); //Get the average position
     }
 
+
     /**
-     * Simple edge struct
+     * Detect corners of outline by approximating polygon
+     * @param epsilon Maximum distance of approximated shape from actual shape
+     * @return List of corners
      */
-    private class Edge{
-        public Edge(Point a, Point b, int length) {
-            this.a = a;
-            this.b = b;
-            this.length = length;
-        }
-        public int length;
-        public Point a;
-        public Point b;
-        public  int getLength(){
-            return length; //Number of pixels long
-        }
+    public ArrayList<Point> detectCorners(double epsilon){
+        ArrayList<Point> corners = (ArrayList<Point>)approximatePolygon(outline,epsilon);
+        corners.remove(corners.size()-1);//remove last duplicate corner
+        return corners;
     }
 
+    /**
+     * Use Douglas Peucker algorithm to approximate shape(very cool)
+     * @param points Points to far(recursive)
+     * @param epsilon Maximum distance of approximated shape from actual shape
+     * @return Points
+     * Cool reference: https://cartography-playground.gitlab.io/playgrounds/douglas-peucker-algorithm/
+     */
+    private static List<Point> approximatePolygon(List<Point> points, double epsilon){
+        //Get maximum distance of the line from the first to last point, and the approximated points to far
 
+        double max_distance = 0;
+        int max_distance_point = 0; //Index of max
+        int last = points.size()-1; //Last element
+
+        for (int i = 1; i < last; i++) { //Do not include first and last
+            double distance = linePerpendicularDistance(points.get(i), points.get(0), points.get(last)); //Get distance perpendicular to line
+            if(distance > max_distance){
+                max_distance = distance;
+                max_distance_point = i;
+            }
+        }
+
+        ArrayList<Point> output = new ArrayList<>();
+
+        if(max_distance > epsilon){ //Keep dividing
+            //Recursively divide
+            List<Point> a = approximatePolygon( points.subList(0, max_distance_point+1),epsilon);
+            List<Point> b = approximatePolygon( points.subList(max_distance_point, last+1),epsilon);
+            //Put list together, not duplicating middle point
+            output.addAll(a.subList(0,a.size()-1));
+            output.addAll(b);
+        }else { //Do not divide(close enough)
+            output.add(points.get(0)); //Return first and last point
+            output.add(points.get(last));
+        }
+
+        return output;
+    }
 
     /**
-     * Get estimated corner positions
-     * @param threshold Maximum error for a straight line in radians
-     * @param  num_corners How many corners to detect.
+     * Get the perpendicular distance from a point to a line
+     * @param point Point
+     * @param line_a, line_b Two points on the line
      */
-    public ArrayList<Point> detectCorners(double threshold, int num_corners){
-        ArrayList<Point> corners = new ArrayList<>();
-        int step = 5;
-        if(outline.size() < step+1){
-            return corners;
-        }
-        //First we need to detect sides
-        Vector2 last_slope = new Vector2(outline.get(0).subtract(outline.get(step)));
-        int count = 0;
-        for (int i = step; i < outline.size(); i+=step) {
-            Vector2 slope = new Vector2(outline.get(i-step).subtract(outline.get(i)));
-            if(Math.abs(Math.atan2(slope.getX(), slope.getY())-Math.atan2(last_slope.getX(), last_slope.getY())) > threshold){ //Significant difference
-                //create edge if big enough
-                if(count > 3){
-                    corners.add(outline.get(i));
-                }
-                last_slope = slope;
-                count = 0;
-            }
-            count++;
-            last_slope =  ( last_slope.multiply((count-1)).add( slope)).divide(count );
-        }
-        return corners;
+    private static double linePerpendicularDistance(Point point, Point line_a, Point line_b) {
+        //Find general form line
+        double a = line_b.getY()-line_a.getY();
+        double b = line_a.getX()-line_b.getX();
+        double c = line_a.getY()*line_b.getX()-line_a.getX()*line_b.getY();
+        //Get perpendicular distance
+        return Math.abs(a*point.getX()+b*point.getY()+c)/Math.sqrt(a*a+b*b);
     }
 
     /**
@@ -94,6 +110,9 @@ public class Shape {
         }
     }
 
+    /**
+     * Get # of points
+     */
     public int size() {
         return outline.size();
     }
