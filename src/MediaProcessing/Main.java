@@ -3,6 +3,7 @@ package MediaProcessing;
 
 import MediaProcessing.Data.Image;
 import MediaProcessing.Data.Video;
+import MediaProcessing.Filters.Rotate;
 import MediaProcessing.Filters.Tracking.DrawBounding;
 import MediaProcessing.Filters.Tracking.DrawMarker;
 import MediaProcessing.IO.*;
@@ -17,14 +18,28 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) throws IOException, JCodecException {
+        ImageLoader<HSV> frame_loader = new ImageLoader<>("media/card6.jpg"); //Load image
+        Image<HSV> single_frame = frame_loader.getImage(HSV.class);
 
-        VideoLoader<HSV> loader = new VideoLoader<>("media/Card.mp4");
-        Video<HSV> video = loader.getVideo(HSV.class);
-        CardTracker tracker = new CardTracker( 10,new CardDetector(0.7, new HSV(new RGBA(253,254,255))),100);
+      //  VideoLoader<HSV> loader = new VideoLoader<>("media/Card.mp4");
+        //Video<HSV> video = loader.getVideo(HSV.class);
+        Video<HSV> video = new Video<>(single_frame.getWidth(),single_frame.getHeight(),24);
+        System.out.println("Video initialized");
+        for (int i = 0; i < 20; i++) {
+            Image<HSV> frame = single_frame.makeCopy();
+            Rotate<HSV> rot = new Rotate<HSV>(i, single_frame.getWidth()/2, single_frame.getHeight()/2, new HSV());
+            rot.apply(frame);
+            video.addFrame(frame);
+        }
+        System.out.println("Test video fabricated");
+
+        CardTracker tracker = new CardTracker( 100,new CardDetector(0.7, new HSV(new RGBA(253,254,255))),10000);
         video.forEach( frame -> {
             tracker.trackFrame(frame);
             tracker.drawCardPositions(frame);
+            System.out.println("Tracking " + (int)((double)tracker.getFrameCount() / video.getFrameCount() * 100) + "%");
         });
+        System.out.println("Done tracking ");
         VideoWriter video_writer = new VideoWriter("tracked.mp4");
         video_writer.writeVideo(video);
 

@@ -53,10 +53,19 @@ public class CardTracker {
         public HSV display_color;
     }
 
-    private ArrayList<Card> cards = new ArrayList<>();
+    private int frame_count = 0;
+    private final ArrayList<Card> cards = new ArrayList<>();
     private final int max_untracked_frames;
     private final CardDetector detector;
     private final double max_movement_distance;
+
+    /**
+     * Get number of frames tracked so far
+     * Useful for percent completed
+     */
+    public int getFrameCount(){
+        return frame_count;
+    }
 
     /**
      * Tack cards in video
@@ -74,6 +83,7 @@ public class CardTracker {
      * Track the next frame form video or video stream
      */
     public void trackFrame(Image<HSV> frame){
+        frame_count++;
         ArrayList<BoundingPolygon> polygons = detector.detect(frame); //Get polygons
         //Match to current cards
         for(Card card : cards){
@@ -90,16 +100,19 @@ public class CardTracker {
                 }
             }
             if(closest == null){
-                card.update();;
+                card.update();
             }else {
                 card.update(null,closest);
-                polygons.remove(closest);
+                //todo find polygons that do not correspond to any card(remaining polygons)
+               // polygons.remove(closest);
             }
         }
         for (BoundingPolygon remaining_polygon: polygons) {
-            cards.add(new Card(null,remaining_polygon));
+            if(frame_count == 1) {     //todo look for new cards every frame, not just first
+                cards.add(new Card(null,remaining_polygon));
+            }
         }
-        cards.removeIf(card -> card.num_untracked > max_untracked_frames);
+       // cards.removeIf(card -> card.num_untracked > max_untracked_frames);
     }
 
     /**
