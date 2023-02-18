@@ -21,11 +21,13 @@ public class Main {
         ImageLoader<HSV> frame_loader = new ImageLoader<>("media/card6.jpg"); //Load image
         Image<HSV> single_frame = frame_loader.getImage(HSV.class);
 
+
+        //Generate or load video
       //  VideoLoader<HSV> loader = new VideoLoader<>("media/Card.mp4");
         //Video<HSV> video = loader.getVideo(HSV.class);
         Video<HSV> video = new Video<>(single_frame.getWidth(),single_frame.getHeight(),24);
         System.out.println("Video initialized");
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 360; i++) {
             Image<HSV> frame = single_frame.makeCopy();
             Rotate<HSV> rot = new Rotate<HSV>(i, single_frame.getWidth()/2, single_frame.getHeight()/2, new HSV());
             rot.apply(frame);
@@ -33,16 +35,21 @@ public class Main {
         }
         System.out.println("Test video fabricated");
 
-        CardTracker tracker = new CardTracker( 100,new CardDetector(0.7, new HSV(new RGBA(253,254,255))),10000);
+        //Track
+        CardTracker tracker = new CardTracker( 15,new CardDetector(0.7, new HSV(new RGBA(253,254,255))),200);
         video.forEach( frame -> {
             tracker.trackFrame(frame);
             tracker.drawCardPositions(frame);
             System.out.println("Tracking " + (int)((double)tracker.getFrameCount() / video.getFrameCount() * 100) + "%");
         });
         System.out.println("Done tracking ");
+        //Save
         VideoWriter video_writer = new VideoWriter("tracked.mp4");
         video_writer.writeVideo(video);
 
+
+
+        //Image demo
         ImageLoader<HSV> reader = new ImageLoader<>("media/card6.jpg"); //Load image
         Image<HSV> image = reader.getImage(HSV.class);
 

@@ -6,6 +6,7 @@ import MediaProcessing.Filters.Tracking.DrawMarker;
 import MediaProcessing.Utils.Colors.HSV;
 import MediaProcessing.Utils.Colors.RGBA;
 import MediaProcessing.Utils.Vectors.Point;
+import MediaProcessing.Utils.Vectors.Vector2;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -87,32 +88,31 @@ public class CardTracker {
         ArrayList<BoundingPolygon> polygons = detector.detect(frame); //Get polygons
         //Match to current cards
         for(Card card : cards){
-            //Get closest polygon todo card similarity
+            //Get closest polygon todo card similarity using card faces
             Point card_center = card.last_position.getCenter();
             BoundingPolygon closest = null;
             double closest_dist = max_movement_distance;
             for (BoundingPolygon polygon: polygons) {
-                Point center = polygon.getCenter(); //todo compute once per polygon
-                double distance = card_center.distance(center);
+                Point center = polygon.getCenter();
+                double distance = new Vector2(card_center).distance(new Vector2(center));
                 if (distance < closest_dist){
                     closest_dist = distance;
                     closest = polygon;
                 }
             }
-            if(closest == null){
-                card.update();
+            if(closest == null){ //No close polygon found
+                card.update(); //Track that it was nt found
             }else {
-                card.update(null,closest);
-                //todo find polygons that do not correspond to any card(remaining polygons)
-               // polygons.remove(closest);
+                //todo closest polygon is not always choses if it is removed before
+                card.update(null,closest); //update
+                polygons.remove(closest);//Polygon can not correspond to other card
             }
         }
         for (BoundingPolygon remaining_polygon: polygons) {
-            if(frame_count == 1) {     //todo look for new cards every frame, not just first
-                cards.add(new Card(null,remaining_polygon));
-            }
+
+                cards.add(new Card(null,remaining_polygon)); //Add new cards
         }
-       // cards.removeIf(card -> card.num_untracked > max_untracked_frames);
+        cards.removeIf(card -> card.num_untracked > max_untracked_frames); //remove cards that have been untracked for long
     }
 
     /**
